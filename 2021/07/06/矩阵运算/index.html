@@ -20,17 +20,19 @@
     var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="文章分类">
-<meta property="og:url" content="https://yuehuazhang.github.io/categories/index.html">
+  <meta name="description" content="本博文主要讲解矩阵的运算矩阵平移在三维齐次坐标表示中，任意点：$P&#x3D;\left ( x,y,z \right )$ 矩阵旋转矩阵缩放矩阵与向量变换矩阵与OpenGL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="矩阵运算">
+<meta property="og:url" content="https://yuehuazhang.github.io/2021/07/06/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/index.html">
 <meta property="og:site_name" content="Yeha的博客">
+<meta property="og:description" content="本博文主要讲解矩阵的运算矩阵平移在三维齐次坐标表示中，任意点：$P&#x3D;\left ( x,y,z \right )$ 矩阵旋转矩阵缩放矩阵与向量变换矩阵与OpenGL">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-07-05T14:28:31.000Z">
-<meta property="article:modified_time" content="2021-07-05T14:30:26.066Z">
+<meta property="article:published_time" content="2021-07-06T15:21:37.090Z">
+<meta property="article:modified_time" content="2021-07-08T15:46:42.931Z">
 <meta property="article:author" content="Yeha">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yuehuazhang.github.io/categories/">
+<link rel="canonical" href="https://yuehuazhang.github.io/2021/07/06/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/">
 
 
 <script id="page-configurations">
@@ -38,13 +40,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>文章分类 | Yeha的博客
-</title>
+  <title>矩阵运算 | Yeha的博客</title>
   
 
 
@@ -142,51 +143,86 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2021/07/06/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          矩阵运算
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">文章分类
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
 
-<div class="post-meta">
+              <time title="创建时间：2021-07-06 23:21:37" itemprop="dateCreated datePublished" datetime="2021-07-06T23:21:37+08:00">2021-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-08 23:46:42" itemprop="dateModified" datetime="2021-07-08T23:46:42+08:00">2021-07-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="本博文主要讲解矩阵的运算"><a href="#本博文主要讲解矩阵的运算" class="headerlink" title="本博文主要讲解矩阵的运算"></a>本博文主要讲解矩阵的运算</h1><h2 id="矩阵平移"><a href="#矩阵平移" class="headerlink" title="矩阵平移"></a>矩阵平移</h2><p>在三维齐次坐标表示中，任意点：<br>$P=\left ( x,y,z \right )$</p>
+<h2 id="矩阵旋转"><a href="#矩阵旋转" class="headerlink" title="矩阵旋转"></a>矩阵旋转</h2><h2 id="矩阵缩放"><a href="#矩阵缩放" class="headerlink" title="矩阵缩放"></a>矩阵缩放</h2><h2 id="矩阵与向量变换"><a href="#矩阵与向量变换" class="headerlink" title="矩阵与向量变换"></a>矩阵与向量变换</h2><h2 id="矩阵与OpenGL"><a href="#矩阵与OpenGL" class="headerlink" title="矩阵与OpenGL"></a>矩阵与OpenGL</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/28/hello-world/" rel="prev" title="我的博客">
+      <i class="fa fa-chevron-left"></i> 我的博客
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              暂无分类
-            </div>
-            <div class="category-all">
-              
-            </div>
-          </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -237,6 +273,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E5%8D%9A%E6%96%87%E4%B8%BB%E8%A6%81%E8%AE%B2%E8%A7%A3%E7%9F%A9%E9%98%B5%E7%9A%84%E8%BF%90%E7%AE%97"><span class="nav-number">1.</span> <span class="nav-text">本博文主要讲解矩阵的运算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E5%B9%B3%E7%A7%BB"><span class="nav-number">1.1.</span> <span class="nav-text">矩阵平移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E6%97%8B%E8%BD%AC"><span class="nav-number">1.2.</span> <span class="nav-text">矩阵旋转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E7%BC%A9%E6%94%BE"><span class="nav-number">1.3.</span> <span class="nav-text">矩阵缩放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8E%E5%90%91%E9%87%8F%E5%8F%98%E6%8D%A2"><span class="nav-number">1.4.</span> <span class="nav-text">矩阵与向量变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8EOpenGL"><span class="nav-number">1.5.</span> <span class="nav-text">矩阵与OpenGL</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
