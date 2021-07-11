@@ -72,7 +72,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -177,7 +181,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-09 00:13:26" itemprop="dateModified" datetime="2021-07-09T00:13:26+08:00">2021-07-09</time>
+                <time title="修改时间：2021-07-11 11:08:27" itemprop="dateModified" datetime="2021-07-11T11:08:27+08:00">2021-07-11</time>
               </span>
 
           
@@ -191,8 +195,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="本博文主要讲解矩阵的运算"><a href="#本博文主要讲解矩阵的运算" class="headerlink" title="本博文主要讲解矩阵的运算"></a>本博文主要讲解矩阵的运算</h1><h2 id="矩阵平移"><a href="#矩阵平移" class="headerlink" title="矩阵平移"></a>矩阵平移</h2><p>在三维齐次坐标表示中，任意点：$P =\left ( x,y,z \right )$</p>
-<h2 id="矩阵旋转"><a href="#矩阵旋转" class="headerlink" title="矩阵旋转"></a>矩阵旋转</h2><h2 id="矩阵缩放"><a href="#矩阵缩放" class="headerlink" title="矩阵缩放"></a>矩阵缩放</h2><h2 id="矩阵与向量变换"><a href="#矩阵与向量变换" class="headerlink" title="矩阵与向量变换"></a>矩阵与向量变换</h2><h2 id="矩阵与OpenGL"><a href="#矩阵与OpenGL" class="headerlink" title="矩阵与OpenGL"></a>矩阵与OpenGL</h2>
+          <h1 id="本博文主要讲解矩阵的运算"><a href="#本博文主要讲解矩阵的运算" class="headerlink" title="本博文主要讲解矩阵的运算"></a>本博文主要讲解矩阵的运算</h1><h2 id="矩阵与向量变换"><a href="#矩阵与向量变换" class="headerlink" title="矩阵与向量变换"></a>矩阵与向量变换</h2><p>&emsp;&emsp;在三维线性空间中，有一组向量基表示为：$e =\left ( e_{1},e_{2},e_{3}\right )$，其中<br>$e_{1}=\begin{pmatrix}<br> x_{1}<br>\y_{1}<br> \z_{1}<br>\end{pmatrix}$，<br>$e_{2}=\begin{pmatrix}<br> x_{2}<br>\y_{2}<br> \z_{2}<br>\end{pmatrix}$<br>$e_{3}=\begin{pmatrix}<br> x_{3}<br>\y_{3}<br> \z_{3}<br>\end{pmatrix}$。有一个点$P$在该组向量基下的坐标为$P=\left ( x,y,z \right )$。<br></br><br>&emsp;&emsp; 在该空间中另有一组向量基表示为：<br>$e^{‘}=\left ( e_{1}^{‘},e_{2}^{‘},e_{3}^{‘}\right )$其中<br>$e_{1}^{‘}=\begin{pmatrix}<br> x_{1}^{‘}<br>\y_{1}^{‘}<br> \z_{1}^{‘}<br>\end{pmatrix}$，<br>$e_{2}^{‘}=\begin{pmatrix}<br> x_{2}^{‘}<br>\y_{2}^{‘}<br> \z_{2}^{‘}<br>\end{pmatrix}$<br>$e_{3}^{‘}=\begin{pmatrix}<br> x_{3}^{‘}<br>\y_{3}^{‘}<br> \z_{3}^{‘}<br>\end{pmatrix}$<br>在该向量基下对应的点$P$的坐标$P^{‘}=\left (x^{‘},y^{‘},z^{‘} \right)$那么我们可以得到：<br>$$<br>P = P^{‘}<em>e^{‘}e^{-1}, P^{‘} = P</em>e<em>e^{‘-1}<br>$$<br>也就是说：<br>$$<br>P=\left ( x,y,z \right )=\left (x^{‘},y^{‘},z^{‘} \right)</em><br>\begin{pmatrix}<br> x_{1}^{‘}&amp;x_{2}^{‘}&amp;x_{3}^{‘}<br>\y_{1}^{‘}&amp;y_{2}^{‘}&amp;x_{3}^{‘}<br> \z_{1}^{‘}&amp;z_{2}^{‘}&amp;x_{3}^{‘}<br>\end{pmatrix}*<br>\begin{pmatrix}<br> x_{1}&amp;x_{2}&amp;x_{3}<br>\y_{1}&amp;y_{2}&amp;x_{3}<br> \z_{1}&amp;z_{2}&amp;x_{3}<br>\end{pmatrix}^{-1}<br>$$<br>$$<br>P^{‘}=\left (x^{‘},y^{‘},z^{‘} \right)=\left ( x,y,z \right )*<br>\begin{pmatrix}<br> x_{1}&amp;x_{2}&amp;x_{3}<br>\y_{1}&amp;y_{2}&amp;x_{3}<br> \z_{1}&amp;z_{2}&amp;x_{3}<br>\end{pmatrix}*<br>\begin{pmatrix}<br> x_{1}^{‘}&amp;x_{2}^{‘}&amp;x_{3}^{‘}<br>\y_{1}^{‘}&amp;y_{2}^{‘}&amp;x_{3}^{‘}<br> \z_{1}^{‘}&amp;z_{2}^{‘}&amp;x_{3}^{‘}<br>\end{pmatrix}^{-1}<br>$$</p>
+<h2 id="矩阵与OpenGL"><a href="#矩阵与OpenGL" class="headerlink" title="矩阵与OpenGL"></a>矩阵与OpenGL</h2>
       
     </div>
 
