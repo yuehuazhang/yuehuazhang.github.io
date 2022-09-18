@@ -160,6 +160,184 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/09/18/FreeCAD%E6%A8%A1%E5%9D%97%E5%8A%A0%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/09/18/FreeCAD%E6%A8%A1%E5%9D%97%E5%8A%A0%E8%BD%BD/" class="post-title-link" itemprop="url">FreeCAD 模块加载</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-18 18:36:41 / 修改时间：18:49:50" itemprop="dateCreated datePublished" datetime="2022-09-18T18:36:41+08:00">2022-09-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="FreeCAD运行的三种模式"><a href="#FreeCAD运行的三种模式" class="headerlink" title="FreeCAD运行的三种模式"></a>FreeCAD运行的三种模式</h2><p>&emsp;&emsp; FreeCAD有三种运行模式，即命令行模式、脚本模式以及界面模式。针对于FreeCAD中每一个模块，都包括两个库，第一个库是App库主要是供脚本调用库，是无界面的功能实现库，第二个库是GUI库，该库是该模块的界面库，界面库是通过调用脚本库来实现功能的。</p>
+<h2 id="FreeCAD中的模块加载方法"><a href="#FreeCAD中的模块加载方法" class="headerlink" title="FreeCAD中的模块加载方法"></a>FreeCAD中的模块加载方法</h2><h3 id="每个模块的加载方法。"><a href="#每个模块的加载方法。" class="headerlink" title="每个模块的加载方法。"></a>每个模块的加载方法。</h3><p>&emsp;&emsp;FreeCAD启动的时候会遍历安装目录mod文件夹下面的文件，该遍历的实现位于Application::runInitGuiScript(void)中。<br>这个函数中运行了脚本FreeCADGuiInit.Py，在脚本中会运行函数InitApplications()，这个函数会遍历所有的模块，运行每一个模块的InitGui.py脚本，在该脚本中会运行Gui.addWorkbench(*Workbench())对应的C++代码是Application::sAddWorkbenchHandler，该函数在Gui模块里面进行了封装，对应的函数名就是addWorkbench。最终该WorkBench会被放入到Application的_pcWorkbenchDictionary一个字典列表中。</p>
+<h3 id="模块中接口的调用方法。"><a href="#模块中接口的调用方法。" class="headerlink" title="模块中接口的调用方法。"></a>模块中接口的调用方法。</h3><p>&emsp;&emsp; 在python中运行一个导入模块的时候会首先运行Application::activateWorkbench函数，该函数中调用模块下面的InitGui.py文件中平台的Initialize函数，通过以下两句实现：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Py::Callable activate(handler.getAttr(std::string(&quot;Initialize&quot;)));</span><br><span class="line">activate.apply(args);</span><br></pre></td></tr></table></figure><br>Initialize函数才是真正加载该模块的方法。<br>&emsp;&emsp; 在Initialize函数中有会调用import 模块名，这会导致调用PyInit_模块名的函数。例如：针对PartGui模块，Application::activateWorkbench会导致PartWorkbench中的Initialize被调用，进而导致import PartGui被调用，这会直接调用PyInit_PartGui函数。在FreeCAD的GUI模块中，通常该接口实现定义在App<em>GUI.cpp 文件中（其中</em>表示模块名称），例如AppPartGUI.cpp 定义了PyInit_PartGui。<br>PyInit_PartGui主要进行了如下的工作：</p>
+<ul>
+<li>加载脚本模块：import Part</li>
+<li>创建PartGui对应的python object。</li>
+<li>初始化PartGui中的类型。</li>
+<li>初始化Workbench，Workbench主要是创建菜单以及工具栏等操作。</li>
+<li>创建命令。</li>
+<li>加载资源。<br>&emsp;&emsp; PyInit_PartGui最后会创建一个PyObject，也就是说会创建一个python的类。这样PartGui就可以当作python的一个模块，按照python的调用方式进行调用了。<br>&emsp;&emsp;  Py::ExtensionModule<Module> 是C++封装为python工具PyCXX 提供的封装类，PartGui模块继承了Py::ExtensionModule<Module>也是就说采用的PyCXX的方式对C++进行封装的。</Module></Module></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/06/14/RTR4-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/14/RTR4-1/" class="post-title-link" itemprop="url">实时渲染笔记1-矩阵</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-14 22:21:17" itemprop="dateCreated datePublished" datetime="2022-06-14T22:21:17+08:00">2022-06-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-06-15 22:18:21" itemprop="dateModified" datetime="2022-06-15T22:18:21+08:00">2022-06-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RTR4/" itemprop="url" rel="index"><span itemprop="name">RTR4</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="矩阵学习"><a href="#矩阵学习" class="headerlink" title="矩阵学习"></a>矩阵学习</h1><h2 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵"></a>旋转矩阵</h2><p>绕x轴旋转（沿着x轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{x}(\phi)=
+\begin{pmatrix}
+ 1&0&0&0
+\\0&cos\phi&-sin\phi&0
+ \\0& sin\phi&cos\phi&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>绕y轴旋转（沿着y轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{y}(\phi)=
+\begin{pmatrix}
+ cos\phi&0&sin\phi&0
+\\0&1&0&0
+ \\-sin\phi&0&cos\phi&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>绕z轴旋转（沿着z轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{z}(\phi)=
+\begin{pmatrix}
+ cos\phi&-sin\phi&0&0
+\\sin\phi&cos\phi&0&0
+ \\0&0&1&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>我们可以将其转换为一个3X3的旋转矩阵（删除最后一行和最后一列）。<br>对于每一个3X3的旋转矩阵，其迹（主对角线之和）为一个定值即：</p>
+<script type="math/tex; mode=display">
+tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交的。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -836,20 +1014,20 @@ P^{'}=\left (x^{'},y^{'},z^{'} \right)=\left ( x,y,z \right )*
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
