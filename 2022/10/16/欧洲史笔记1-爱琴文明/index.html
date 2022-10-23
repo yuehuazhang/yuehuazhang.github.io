@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="&amp;emsp;&amp;emsp;在我们读取数据时，会根据保存的数据的内容创建对应的类，从而正确的读取数据，根据保存数据创建类就是一种类的动态创建。本博客下面主要讲述FreeCAD中类的动态创建过程。 实现动态创建的重要材料&amp;emsp;&amp;emsp;在FreeCAD的type.cpp文件中，和动态创建非常相关的几个变量或者说类我们先介绍一下：Type 类：这个类中封装了类的一般操作，比如创建实例，查找其父类等">
+  <meta name="description" content="爱琴文明爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。 特洛伊-欧洲史的开端&amp;emsp;&amp;emsp; 大家可能都听说过特洛伊战争，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在">
 <meta property="og:type" content="article">
-<meta property="og:title" content="FreeCAD中类型的动态创建">
-<meta property="og:url" content="https://yuehuazhang.github.io/2022/01/05/FreeCAD%E7%B1%BB%E5%9E%8B%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA/index.html">
+<meta property="og:title" content="欧洲史之爱琴文明">
+<meta property="og:url" content="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/index.html">
 <meta property="og:site_name" content="Yeha的博客">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;在我们读取数据时，会根据保存的数据的内容创建对应的类，从而正确的读取数据，根据保存数据创建类就是一种类的动态创建。本博客下面主要讲述FreeCAD中类的动态创建过程。 实现动态创建的重要材料&amp;emsp;&amp;emsp;在FreeCAD的type.cpp文件中，和动态创建非常相关的几个变量或者说类我们先介绍一下：Type 类：这个类中封装了类的一般操作，比如创建实例，查找其父类等">
+<meta property="og:description" content="爱琴文明爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。 特洛伊-欧洲史的开端&amp;emsp;&amp;emsp; 大家可能都听说过特洛伊战争，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-05T15:52:34.262Z">
-<meta property="article:modified_time" content="2022-01-05T16:08:29.217Z">
+<meta property="article:published_time" content="2022-10-16T08:36:07.508Z">
+<meta property="article:modified_time" content="2022-10-23T10:08:46.531Z">
 <meta property="article:author" content="Yeha">
-<meta property="article:tag" content="架构">
+<meta property="article:tag" content="历史">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yuehuazhang.github.io/2022/01/05/FreeCAD%E7%B1%BB%E5%9E%8B%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA/">
+<link rel="canonical" href="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>FreeCAD中类型的动态创建 | Yeha的博客</title>
+  <title>欧洲史之爱琴文明 | Yeha的博客</title>
   
 
 
@@ -166,7 +166,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/01/05/FreeCAD%E7%B1%BB%E5%9E%8B%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +179,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          FreeCAD中类型的动态创建
+          欧洲史之爱琴文明
         </h1>
 
         <div class="post-meta">
@@ -189,14 +189,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-01-05 23:52:34" itemprop="dateCreated datePublished" datetime="2022-01-05T23:52:34+08:00">2022-01-05</time>
+              <time title="创建时间：2022-10-16 16:36:07" itemprop="dateCreated datePublished" datetime="2022-10-16T16:36:07+08:00">2022-10-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-06 00:08:29" itemprop="dateModified" datetime="2022-01-06T00:08:29+08:00">2022-01-06</time>
+                <time title="修改时间：2022-10-23 18:08:46" itemprop="dateModified" datetime="2022-10-23T18:08:46+08:00">2022-10-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -204,7 +204,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
+                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
                 </span>
             </span>
 
@@ -219,9 +219,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>&emsp;&emsp;在我们读取数据时，会根据保存的数据的内容创建对应的类，从而正确的读取数据，根据保存数据创建类就是一种类的动态创建。本博客下面主要讲述FreeCAD中类的动态创建过程。</p>
-<h2 id="实现动态创建的重要材料"><a href="#实现动态创建的重要材料" class="headerlink" title="实现动态创建的重要材料"></a>实现动态创建的重要材料</h2><p>&emsp;&emsp;在FreeCAD的type.cpp文件中，和动态创建非常相关的几个变量或者说类我们先介绍一下：<br>Type 类：这个类中封装了类的一般操作，比如创建实例，查找其父类等，这个类会和一个具体的类绑定，通过该类创建出对应的类，这个类应该是动态创建的接口类。<br>TypeData类： 是保存对应的绑定类的具体数据的类，Type 类应该说是对TypeData类操作的一个接口，TypeData中包含一个Type 类型的变量。<br>Type类中有两个非常重要的静态变量：<br>map<string,unsigned int>   Type::typemap;<br>vector<TypeData*>        Type::typedata;<br>这两个变量最终保存了注册类的名称以及创建类的函数。<br>&emsp;&emsp;FreeCAD所有的类型都是继承自BaseClass类，这个类中有一个静态的Type即classTypeId（子类中会重写覆盖），正是通过这个，所有的类型和Type绑定，实现的动态创建的相关操作。<br>&emsp;&emsp;所有继承自BaseClass类的类都有一个宏 TYPESYSTEM_HEADER();该宏重新声明了以下函数：<br>static Base::Type getClassTypeId(void);<br>static void init(void);<br>static void *create(void);<br>以及一个变量<br>static Base::Type classTypeId；<br>这些变量在基类中就存在，重新声明会覆盖掉以前的函数以及变量。后面我们会看到这几个函数和变量在该类型的动态创建很有关系。在类的实现中我们可以看到这个宏的定义类似如下所示：<br>TYPESYSTEM_SOURCE(Base::AbortException,Base::Exception)<br>这个是TYPESYSTEM_HEADER宏声明的实现。<br>有了以上宏定义的内容，我们就可以实现动态创建了。</TypeData*></string,unsigned></p>
-<h2 id="动态创建的实现"><a href="#动态创建的实现" class="headerlink" title="动态创建的实现"></a>动态创建的实现</h2><p>&emsp;&emsp;动态创建的一个基本的思路是这样的：针对一个类首先得有一个注册，注册的目的是将一个类名和类型实例创建的函数（static）绑定，同时保存在一个容器里面。下面是具体的创建方式。<br>&emsp;&emsp;我们注册一个变量的时候会调用其init函数这个函数的实现在TYPESYSTEM_SOURCE中，这个函数主要进行了以下的操作：<br>&emsp;&emsp;创建了一个TypeData，这个TypeData将类名、该类的父类的Type以及创建方法进行了保存。同时将这个创建的TypeData放入Type::typedata中。另外将类名以及在Type::typedata中的索引保存到Type::typemap中。<br>在实际读取数据中，具体过程是这样的：<br>当读到一个类名的时候，会调用Type::createInstanceByName 函数，在这个函数中，会根据读取的类的名称在Type::typemap找到对应的索引，通过对应的索引在Type::typedata中找到对应的TypeData，TypeData中保存该类的创建函数，那么我们调用创建函数就可以创建出该类来。</p>
+        <h1 id="爱琴文明"><a href="#爱琴文明" class="headerlink" title="爱琴文明"></a>爱琴文明</h1><p>爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。</p>
+<h2 id="特洛伊-欧洲史的开端"><a href="#特洛伊-欧洲史的开端" class="headerlink" title="特洛伊-欧洲史的开端"></a>特洛伊-欧洲史的开端</h2><p>&emsp;&emsp; 大家可能都听说过<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/特洛伊战争">特洛伊战争</a>，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在，特洛伊战争仅仅是一个人们想象的神话故事，这个认识在19世纪末被打破，打破这个认识首先归功于海因里希.谢里曼。他首先发现了特洛伊城的遗址位于土耳其西北部的西萨利克并且发现了阿伽门农的神庙。特洛伊城的发现使欧洲的文明时间大大提前，也是人们研究欧洲史前文明的开端。</p>
+<h2 id="阶段划分"><a href="#阶段划分" class="headerlink" title="阶段划分"></a>阶段划分</h2><h2 id="米诺斯文明"><a href="#米诺斯文明" class="headerlink" title="米诺斯文明"></a>米诺斯文明</h2><p>&emsp;&emsp; 米诺斯文明主要集中于克里特岛，开始于公元前3500年，复杂的城市文明在公元前2000年开始，在公元前1450年开始衰落（这个时期迈锡尼人开始从希腊本土来到克里特岛），在约公元前1100年完结。米诺斯文明被称为“欧洲文明的第一环”。<br>&emsp;&emsp; 米诺斯人可以建筑高达四层的建筑，建筑中拥有精致的管道系统以及壁画。目前发现的最大建筑是克诺索斯宫殿（始建于公元前20世纪，多次扩建，有迷宫之称）。米诺斯人以从事海外贸易为主。米诺斯文明使用的文字可能使用的是目前仍未破解的线性文字A，该文字的使用始于公元前1800年。<br>&emsp;&emsp; 米诺斯对神的崇拜主要是对女性神祀的崇拜，很可能继承问题也是母系的。<br>&emsp;&emsp; 米诺斯人喜欢一种运动，叫做跳牛运动，该运动可能也是神话故事人物米诺陶名称的来源。</p>
+<h2 id="迈锡尼文明"><a href="#迈锡尼文明" class="headerlink" title="迈锡尼文明"></a>迈锡尼文明</h2><p>&emsp;&emsp; 迈锡尼文明是希腊本土的文明，它由伯罗奔尼撒半岛的迈锡尼城而得名。是古希腊青铜时代后期的一个文明。</p>
 
     </div>
 
@@ -231,7 +232,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"># 架构</a>
+              <a href="/tags/%E5%8E%86%E5%8F%B2/" rel="tag"># 历史</a>
           </div>
 
         
@@ -240,12 +241,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/08/15/%E7%94%A8VS2019%E7%BC%96%E8%AF%91FreeCAD/" rel="prev" title="用VS2019编译FreeCAD">
-      <i class="fa fa-chevron-left"></i> 用VS2019编译FreeCAD
+    <a href="/2022/10/16/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-Logicaldevice/" rel="prev" title="Vulkan笔记-逻辑设备以及队列">
+      <i class="fa fa-chevron-left"></i> Vulkan笔记-逻辑设备以及队列
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/01/17/Python%E4%B8%AD%E7%9A%84%E7%B1%BB/" rel="next" title="Python中的类">
-      Python中的类 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/10/17/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B06-Windowsurface/" rel="next" title="Vulkan笔记-逻辑设备以及队列">
+      Vulkan笔记-逻辑设备以及队列 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -305,7 +306,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E7%9A%84%E9%87%8D%E8%A6%81%E6%9D%90%E6%96%99"><span class="nav-number">1.</span> <span class="nav-text">实现动态创建的重要材料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">动态创建的实现</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">爱琴文明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%B4%9B%E4%BC%8A-%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%9A%84%E5%BC%80%E7%AB%AF"><span class="nav-number">1.1.</span> <span class="nav-text">特洛伊-欧洲史的开端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E5%88%92%E5%88%86"><span class="nav-number">1.2.</span> <span class="nav-text">阶段划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%B3%E8%AF%BA%E6%96%AF%E6%96%87%E6%98%8E"><span class="nav-number">1.3.</span> <span class="nav-text">米诺斯文明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%88%E9%94%A1%E5%B0%BC%E6%96%87%E6%98%8E"><span class="nav-number">1.4.</span> <span class="nav-text">迈锡尼文明</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

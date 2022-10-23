@@ -160,6 +160,331 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/18/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B07-Swapchain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/18/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B07-Swapchain/" class="post-title-link" itemprop="url">Vulkan笔记-交换链</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-18 21:33:25" itemprop="dateCreated datePublished" datetime="2022-10-18T21:33:25+08:00">2022-10-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-23 17:07:24" itemprop="dateModified" datetime="2022-10-23T17:07:24+08:00">2022-10-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第七节，主要讲解交换链相关操作。</p>
+<h2 id="什么是交换链"><a href="#什么是交换链" class="headerlink" title="什么是交换链"></a>什么是交换链</h2><p>&emsp;&emsp; Vulkan没有默认帧缓存的概念，因此我们需要一个拥有缓存的机构，我们在其拥有的缓存中渲染。这个机构我们称作交换链。交换链实际上就是等待呈现到屏幕上的一队列的图片。我们应用程序需要获取这些图片，并进行绘制，然后将其返回到队列中。</p>
+<h2 id="检查交换链是否支持"><a href="#检查交换链是否支持" class="headerlink" title="检查交换链是否支持"></a>检查交换链是否支持</h2><p>&emsp;&emsp; 不是所有的显卡都支持将要显示的图片呈现到屏幕上面。这主要有两个方面的原因：</p>
+<ul>
+<li>有些电脑不需要显示，例如服务器，没有任何显示输出。</li>
+<li>图片的现实和具体的窗口绑定很深，而VulKan是和窗口无关的接口。<h3 id="检查是否支持交换链的代码"><a href="#检查是否支持交换链的代码" class="headerlink" title="检查是否支持交换链的代码"></a>检查是否支持交换链的代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//交换链扩展名称（用宏进行的命令）</span></span><br><span class="line"><span class="keyword">const</span> std::vector&lt;<span class="keyword">const</span> <span class="keyword">char</span>*&gt; deviceExtensions = &#123;</span><br><span class="line">VK_KHR_SWAPCHAIN_EXTENSION_NAME</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//检查物理设备是否支持的代码</span></span><br><span class="line"><span class="keyword">bool</span> <span class="built_in">checkDeviceExtensionSupport</span>(VkPhysicalDevice device) &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取需要写扩展内容的大小</span></span><br><span class="line"><span class="keyword">uint32_t</span> extensionCount;</span><br><span class="line"><span class="built_in">vkEnumerateDeviceExtensionProperties</span>(device, <span class="literal">nullptr</span>,</span><br><span class="line">&amp;extensionCount, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取扩展的名称</span></span><br><span class="line"><span class="function">std::vector&lt;VkExtensionProperties&gt;</span></span><br><span class="line"><span class="function"><span class="title">availableExtensions</span><span class="params">(extensionCount)</span></span>;</span><br><span class="line"><span class="built_in">vkEnumerateDeviceExtensionProperties</span>(device, <span class="literal">nullptr</span>,</span><br><span class="line">&amp;extensionCount, availableExtensions.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据requiredExtensions遍历availableExtensions如果requiredExtensions里面的availableExtensions都有则支持</span></span><br><span class="line"><span class="function">std::set&lt;std::string&gt; <span class="title">requiredExtensions</span><span class="params">(deviceExtensions.begin(), deviceExtensions.end())</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; extension : availableExtensions) &#123;</span><br><span class="line">requiredExtensions.<span class="built_in">erase</span>(extension.extensionName);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> requiredExtensions.<span class="built_in">empty</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在创建逻辑设备时我们需要添加如下两句</span></span><br><span class="line">createInfo.enabledExtensionCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(deviceExtensions.<span class="built_in">size</span>());</span><br><span class="line">createInfo.ppEnabledExtensionNames = deviceExtensions.<span class="built_in">data</span>();</span><br></pre></td></tr></table></figure>
+<h2 id="检查交换链的相关细节"><a href="#检查交换链的相关细节" class="headerlink" title="检查交换链的相关细节"></a>检查交换链的相关细节</h2>&emsp;&emsp;最基础的三个属性我们要检查。</li>
+<li>基本的窗口容量，也就是在交换链中图片的最大以及最小数量，以及图片的最大和最小长和宽。</li>
+<li>窗口格式，即像素格式以及颜色空间。</li>
+<li>可用的展示模式。<h3 id="检查交换链细节的相关代码"><a href="#检查交换链细节的相关代码" class="headerlink" title="检查交换链细节的相关代码"></a>检查交换链细节的相关代码</h3><h4 id="表面格式"><a href="#表面格式" class="headerlink" title="表面格式"></a>表面格式</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//输出基础属性的数据结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SwapChainSupportDetails</span> &#123;</span></span><br><span class="line">VkSurfaceCapabilitiesKHR capabilities;</span><br><span class="line">std::vector&lt;VkSurfaceFormatKHR&gt; formats;</span><br><span class="line">std::vector&lt;VkPresentModeKHR&gt; presentModes;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//获取VkSurfaceCapabilitiesKHR相关属性：包括最大最小图像数量等</span></span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfaceCapabilitiesKHR</span>(device, surface, &amp;detailscapabilities);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取颜色通道（RGBA等）以及颜色空间（sRGB是否支持）</span></span><br><span class="line"><span class="keyword">uint32_t</span> formatCount;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfaceFormatsKHR</span>(device, surface, &amp;formatCount, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="keyword">if</span> (formatCount != <span class="number">0</span>) &#123;</span><br><span class="line">    details.formats.<span class="built_in">resize</span>(formatCount);</span><br><span class="line">    <span class="built_in">vkGetPhysicalDeviceSurfaceFormatsKHR</span>(device, surface, &amp;formatCount, details.formats.<span class="built_in">data</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//选择合适的窗口格式</span></span><br><span class="line"><span class="function">VkSurfaceFormatKHR <span class="title">chooseSwapSurfaceFormat</span><span class="params">(<span class="keyword">const</span> std::vector&lt;VkSurfaceFormatKHR&gt;&amp; availableFormats)</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; availableFormat : availableFormats) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &amp;&amp;</span><br><span class="line">            availableFormat.colorSpace ==</span><br><span class="line">        VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) &#123;</span><br><span class="line">            <span class="keyword">return</span> availableFormat;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> availableFormats[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="展示模式"><a href="#展示模式" class="headerlink" title="展示模式"></a>展示模式</h4>&emsp;&emsp; 展示模式是交换链非常重要的一个设置，因为其展示了实际的展示图片的条件。这里有四种可能的模式如下：</li>
+<li>VK_PRESENT_MODE_IMMEDIATE_KHR：你的程序提交的图像会立即传输到屏幕，这可能会导致撕裂。</li>
+<li>VK_PRESENT_MODE_FIFO_KHR：交换链是个队列，显示的时候从队列头拿一个图像，程序插入渲染的图像到队列尾。如果队列满了程序就要等待，这差不多像是垂直同步，显示刷新的时刻就是垂直空白。</li>
+<li>VK_PRESENT_MODE_FIFO_RELAXED_KHR：在最后一个垂直空白的时候，如果应用迟到，且队列为空，该模式才会和前面的那个有所不同。这样就不等到下一个垂直空白，图像会直接传输到屏幕，可能导致撕裂。</li>
+<li>VK_PRESENT_MODE_MAILBOX_KHR：这是第二个模式的又一个变种，当队列满的时候，它不会阻塞应用，已经在队列中的图像会被新的替换。这个模式可以实现三重缓冲，避免撕裂，比使用双重缓冲的垂直同步减少很多延迟。<h4 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//展示模式：获取展示模式的类型</span></span><br><span class="line"><span class="keyword">uint32_t</span> presentModeCount;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfacePresentModesKHR</span>(device, surface, &amp;presentModeCount, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="keyword">if</span> (presentModeCount != <span class="number">0</span>) &#123;</span><br><span class="line">details.presentModes.<span class="built_in">resize</span>(presentModeCount);</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfacePresentModesKHR</span>(device, surface,</span><br><span class="line">&amp;presentModeCount, details.presentModes.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//选择合适的展示模式</span></span><br><span class="line"><span class="function">VkPresentModeKHR <span class="title">chooseSwapPresentMode</span><span class="params">(<span class="keyword">const</span> std::vector&lt;VkPresentModeKHR&gt;&amp; availablePresentModes)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; availablePresentMode : availablePresentModes) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) </span><br><span class="line">            &#123;</span><br><span class="line">            <span class="keyword">return</span> availablePresentMode;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">return</span> VK_PRESENT_MODE_FIFO_KHR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="交换扩展"><a href="#交换扩展" class="headerlink" title="交换扩展"></a>交换扩展</h4>&emsp;&emsp; 交换扩展是交换链中图片的分辨率。一般情况下都精确等于窗口的像素格式的分辨率。交换链中图片的分辨率的范围在VkSurfaceCapabilitiesKHR结构中进行的定义。一般情况下VulKan会通过设置currentExtent中的width以及height值来告诉我们匹配窗口的分辨率的值是多少。不过一些窗口管理器却不设置上面的值，而是给currentExtent中的width以及height设置uint32_t类型的最大值（比如使用高清分辨显示器，桌面坐标和像素并非对应，像素的密度大）。在这种情况下我们需要自己来选择合理的分辨率，合理的分辨率一般在minImageExtent和maxImageExtent之间。<h4 id="相关代码-1"><a href="#相关代码-1" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VkExtent2D <span class="title">chooseSwapExtent</span><span class="params">(<span class="keyword">const</span> VkSurfaceCapabilitiesKHR&amp; capabilities)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//不等于uint32_t最大值时的分辨率匹配</span></span><br><span class="line">    <span class="keyword">if</span> (capabilities.currentExtent.width != std::numeric_limits&lt;<span class="keyword">uint32_t</span>&gt;::<span class="built_in">max</span>()) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> capabilities.currentExtent;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">int</span> width, height;</span><br><span class="line">    <span class="comment">//由于在高清</span></span><br><span class="line">    <span class="built_in">glfwGetFramebufferSize</span>(window, &amp;width, &amp;height);</span><br><span class="line">    VkExtent2D actualExtent = </span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(width),</span><br><span class="line">        <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(height)</span><br><span class="line">        &#125;;</span><br><span class="line">    actualExtent.width = std::<span class="built_in">clamp</span>(actualExtent.width,</span><br><span class="line">    capabilities.minImageExtent.width,</span><br><span class="line">    capabilities.maxImageExtent.width);</span><br><span class="line">    actualExtent.height = std::<span class="built_in">clamp</span>(actualExtent.height,</span><br><span class="line">    capabilities.minImageExtent.height,</span><br><span class="line">    capabilities.maxImageExtent.height);</span><br><span class="line">    <span class="keyword">return</span> actualExtent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="创建交换链"><a href="#创建交换链" class="headerlink" title="创建交换链"></a>创建交换链</h3><h4 id="相关代码-2"><a href="#相关代码-2" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//收集交换链中的相关细节的信息</span></span><br><span class="line">SwapChainSupportDetails swapChainSupport = <span class="built_in">querySwapChainSupport</span>(physicalDevice);</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据细节获取合适的配置</span></span><br><span class="line">VkSurfaceFormatKHR surfaceFormat = <span class="built_in">chooseSwapSurfaceFormat</span>(swapChainSupport.formats);</span><br><span class="line">VkPresentModeKHR presentMode = <span class="built_in">chooseSwapPresentMode</span>(swapChainSupport.presentModes);</span><br><span class="line">VkExtent2D extent = <span class="built_in">chooseSwapExtent</span>(swapChainSupport.capabilities);</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置交换链中的图片数量</span></span><br><span class="line"><span class="keyword">uint32_t</span> imageCount = swapChainSupport.capabilities.minImageCount + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (swapChainSupport.capabilities.maxImageCount &gt; <span class="number">0</span> &amp;&amp; imageCount &gt; swapChainSupport.capabilities.maxImageCount) &#123;</span><br><span class="line">    imageCount = swapChainSupport.capabilities.maxImageCount;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建交换链</span></span><br><span class="line">VkSwapchainCreateInfoKHR createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;</span><br><span class="line">createInfo.surface = surface;</span><br><span class="line">createInfo.minImageCount = imageCount;</span><br><span class="line">createInfo.imageFormat = surfaceFormat.format;</span><br><span class="line">createInfo.imageColorSpace = surfaceFormat.colorSpace;</span><br><span class="line">createInfo.imageExtent = extent;</span><br><span class="line">createInfo.imageArrayLayers = <span class="number">1</span>;</span><br><span class="line">createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取显示和渲染的队列</span></span><br><span class="line">QueueFamilyIndices indices = <span class="built_in">findQueueFamilies</span>(physicalDevice);</span><br><span class="line"><span class="keyword">uint32_t</span> queueFamilyIndices[] = &#123;indices.graphicsFamily.<span class="built_in">value</span>(),indices.presentFamily.<span class="built_in">value</span>()&#125;;</span><br><span class="line"><span class="comment">//如果显示和渲染队列不是一个队列，这样涉及到图片交换的需要设置拥有权</span></span><br><span class="line"><span class="keyword">if</span> (indices.graphicsFamily != indices.presentFamily)</span><br><span class="line">&#123;</span><br><span class="line">    createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;</span><br><span class="line">    createInfo.queueFamilyIndexCount = <span class="number">2</span>;</span><br><span class="line">    createInfo.pQueueFamilyIndices = queueFamilyIndices;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">else</span> </span><br><span class="line">&#123;</span><br><span class="line">    createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;</span><br><span class="line">    createInfo.queueFamilyIndexCount = <span class="number">0</span>; </span><br><span class="line">    createInfo.pQueueFamilyIndices = <span class="literal">nullptr</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//图片是否需要旋转，currentTransform表示不需要</span></span><br><span class="line">createInfo.preTransform = swapChainSupport.capabilities.currentTransform;</span><br><span class="line"></span><br><span class="line"><span class="comment">//渲染是否和其他窗口融合</span></span><br><span class="line">createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;</span><br><span class="line"></span><br><span class="line">createInfo.presentMode = presentMode;</span><br><span class="line"></span><br><span class="line"><span class="comment">//被其他窗口遮挡的像素是否需要</span></span><br><span class="line">createInfo.clipped = VK_TRUE;</span><br><span class="line"></span><br><span class="line">createInfo.oldSwapchain = VK_NULL_HANDLE;</span><br><span class="line"><span class="comment">//创建交换链</span></span><br><span class="line">VkSwapchainKHR swapChain;</span><br><span class="line"><span class="built_in">vkCreateSwapchainKHR</span>(device, &amp;createInfo, <span class="literal">nullptr</span>, &amp;swapChain);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除交换链</span></span><br><span class="line"><span class="built_in">vkDestroySwapchainKHR</span>(device, swapChain, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4>&emsp;&emsp; 下面是关于一些参数值的说明：</li>
+<li>VK_SHARING_MODE_EXCLUSIVE：一个图片属于一个队列族，在另一个队列族中使用它之前，必须显式地转移其所有权。该选项提供了最佳性能。</li>
+<li>VK_SHARING_MODE_CONCURRENT:图片可以跨多个队列族使用，无需显式的所有权转移。<h3 id="检索交换链图片"><a href="#检索交换链图片" class="headerlink" title="检索交换链图片"></a>检索交换链图片</h3>&emsp;&emsp; 交换链中的图片是我们实际渲染到的位置。<h4 id="相关代码-3"><a href="#相关代码-3" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取交换链图片</span></span><br><span class="line">std::vector&lt;VkImage&gt; swapChainImages;</span><br><span class="line"><span class="built_in">vkGetSwapchainImagesKHR</span>(device, swapChain, &amp;imageCount, <span class="literal">nullptr</span>);</span><br><span class="line">swapChainImages.<span class="built_in">resize</span>(imageCount);</span><br><span class="line"><span class="built_in">vkGetSwapchainImagesKHR</span>(device, swapChain, &amp;imageCount, swapChainImages.<span class="built_in">data</span>());</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/17/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B06-Windowsurface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/17/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B06-Windowsurface/" class="post-title-link" itemprop="url">Vulkan笔记-逻辑设备以及队列</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-17 20:27:08 / 修改时间：21:11:49" itemprop="dateCreated datePublished" datetime="2022-10-17T20:27:08+08:00">2022-10-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第六节，主要讲解Vulkan怎样创建与窗口交互的操作。</p>
+<h2 id="什么是窗口接口"><a href="#什么是窗口接口" class="headerlink" title="什么是窗口接口"></a>什么是窗口接口</h2><p>&emsp;&emsp; 由于Vulkan 是一个与平台无关的API，他不能直接和窗口系统进行交互。为了建立窗口系统和VulKan的联系，我们需要WSI(Window System Integration) 扩展。在这里我们主要讲VK_KHR_surface扩展。由于界面是和系统有关的，在Windows下面，对应的扩展是VK_KHR_win32_surface。</p>
+<h3 id="创建窗口接口"><a href="#创建窗口接口" class="headerlink" title="创建窗口接口"></a>创建窗口接口</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建窗口接口</span></span><br><span class="line"> VkWin32SurfaceCreateInfoKHR createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;</span><br><span class="line">createInfo.hwnd = <span class="built_in">glfwGetWin32Window</span>(window);</span><br><span class="line">createInfo.hinstance = <span class="built_in">GetModuleHandle</span>(<span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkCreateWin32SurfaceKHR</span>(instance, &amp;createInfo, <span class="literal">nullptr</span>,&amp;surface)</span><br><span class="line"><span class="comment">//程序结束时需要释放接口资源</span></span><br><span class="line"><span class="built_in">vkDestroySurfaceKHR</span>(instance, surface, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="选择支持窗口的设备"><a href="#选择支持窗口的设备" class="headerlink" title="选择支持窗口的设备"></a>选择支持窗口的设备</h3><p>&emsp;&emsp; 并不是所有的设备都支持窗口。由于是否支持渲染呈现到窗口上是一个队列的属性，所以我们判断一个设备是否支持窗口关键是判断这个设备中是否存在支持窗口的队列簇。</p>
+<h4 id="选择支持窗口设备的代码"><a href="#选择支持窗口设备的代码" class="headerlink" title="选择支持窗口设备的代码"></a>选择支持窗口设备的代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//判断支持绘制和窗口的结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QueueFamilyIndices</span> &#123;</span></span><br><span class="line">std::optional&lt;<span class="keyword">uint32_t</span>&gt; graphicsFamily;</span><br><span class="line">std::optional&lt;<span class="keyword">uint32_t</span>&gt; presentFamily;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isComplete</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">return</span> graphicsFamily.<span class="built_in">has_value</span>() &amp;&amp;</span><br><span class="line">presentFamily.<span class="built_in">has_value</span>();</span><br><span class="line">&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//查找分别满足绘制和窗口的队列簇</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; queueFamily : queueFamilies) &#123;</span><br><span class="line">    <span class="keyword">if</span> (queueFamily.queueFlags &amp; VK_QUEUE_GRAPHICS_BIT) &#123;</span><br><span class="line">        indices.graphicsFamily = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断支持窗口的函数</span></span><br><span class="line">    VkBool32 presentSupport = <span class="literal">false</span>;</span><br><span class="line">    <span class="built_in">vkGetPhysicalDeviceSurfaceSupportKHR</span>(device, i, surface, &amp;presentSupport);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (presentSupport) &#123;</span><br><span class="line">        indices.presentFamily = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (indices.<span class="built_in">isComplete</span>()) &#123;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    i++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取满足绘制以及窗口的队列的句柄</span></span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(device, indices.graphicsFamily.<span class="built_in">value</span>(), <span class="number">0</span>, &amp;graphicsQueue);</span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(device, indices.presentFamily.<span class="built_in">value</span>(), <span class="number">0</span>, &amp;presentQueue);</span><br></pre></td></tr></table></figure>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><ul>
+<li>由于支持窗口和支持绘制的队列簇不一定重合，所以我们我们用graphicsFamily以及presentFamily分别表示支持绘制和支持窗口。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/" class="post-title-link" itemprop="url">欧洲史之爱琴文明</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-16 16:36:07" itemprop="dateCreated datePublished" datetime="2022-10-16T16:36:07+08:00">2022-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-23 18:08:46" itemprop="dateModified" datetime="2022-10-23T18:08:46+08:00">2022-10-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="爱琴文明"><a href="#爱琴文明" class="headerlink" title="爱琴文明"></a>爱琴文明</h1><p>爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。</p>
+<h2 id="特洛伊-欧洲史的开端"><a href="#特洛伊-欧洲史的开端" class="headerlink" title="特洛伊-欧洲史的开端"></a>特洛伊-欧洲史的开端</h2><p>&emsp;&emsp; 大家可能都听说过<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/特洛伊战争">特洛伊战争</a>，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在，特洛伊战争仅仅是一个人们想象的神话故事，这个认识在19世纪末被打破，打破这个认识首先归功于海因里希.谢里曼。他首先发现了特洛伊城的遗址位于土耳其西北部的西萨利克并且发现了阿伽门农的神庙。特洛伊城的发现使欧洲的文明时间大大提前，也是人们研究欧洲史前文明的开端。</p>
+<h2 id="阶段划分"><a href="#阶段划分" class="headerlink" title="阶段划分"></a>阶段划分</h2><h2 id="米诺斯文明"><a href="#米诺斯文明" class="headerlink" title="米诺斯文明"></a>米诺斯文明</h2><p>&emsp;&emsp; 米诺斯文明主要集中于克里特岛，开始于公元前3500年，复杂的城市文明在公元前2000年开始，在公元前1450年开始衰落（这个时期迈锡尼人开始从希腊本土来到克里特岛），在约公元前1100年完结。米诺斯文明被称为“欧洲文明的第一环”。<br>&emsp;&emsp; 米诺斯人可以建筑高达四层的建筑，建筑中拥有精致的管道系统以及壁画。目前发现的最大建筑是克诺索斯宫殿（始建于公元前20世纪，多次扩建，有迷宫之称）。米诺斯人以从事海外贸易为主。米诺斯文明使用的文字可能使用的是目前仍未破解的线性文字A，该文字的使用始于公元前1800年。<br>&emsp;&emsp; 米诺斯对神的崇拜主要是对女性神祀的崇拜，很可能继承问题也是母系的。<br>&emsp;&emsp; 米诺斯人喜欢一种运动，叫做跳牛运动，该运动可能也是神话故事人物米诺陶名称的来源。</p>
+<h2 id="迈锡尼文明"><a href="#迈锡尼文明" class="headerlink" title="迈锡尼文明"></a>迈锡尼文明</h2><p>&emsp;&emsp; 迈锡尼文明是希腊本土的文明，它由伯罗奔尼撒半岛的迈锡尼城而得名。是古希腊青铜时代后期的一个文明。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/16/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-Logicaldevice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/16/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-Logicaldevice/" class="post-title-link" itemprop="url">Vulkan笔记-逻辑设备以及队列</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-16 09:17:21" itemprop="dateCreated datePublished" datetime="2022-10-16T09:17:21+08:00">2022-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-17 20:27:02" itemprop="dateModified" datetime="2022-10-17T20:27:02+08:00">2022-10-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第五节，主要讲解逻辑设备的创建以及队列的创建以及使用。</p>
+<h2 id="选择物理设备"><a href="#选择物理设备" class="headerlink" title="选择物理设备"></a>选择物理设备</h2><p>&emsp;&emsp; 在选择完成物理设备以后，我们需要创建一个逻辑设备与物理设备进行连接。我们甚至可以根据实际需要，针对一个物理设备创建多个逻辑设备。</p>
+<h3 id="创建逻辑设备"><a href="#创建逻辑设备" class="headerlink" title="创建逻辑设备"></a>创建逻辑设备</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//寻找满足要求的队列簇</span></span><br><span class="line"> QueueFamilyIndices indices = <span class="built_in">findQueueFamilies</span>(physicalDevice);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建设备队列，需要输入满足队列簇的索引</span></span><br><span class="line">VkDeviceQueueCreateInfo queueCreateInfo&#123;&#125;;</span><br><span class="line">queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;</span><br><span class="line">queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.<span class="built_in">value</span>();</span><br><span class="line">queueCreateInfo.queueCount = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置优先级</span></span><br><span class="line"><span class="keyword">float</span> queuePriority = <span class="number">1.0f</span>;</span><br><span class="line">queueCreateInfo.pQueuePriorities = &amp;queuePriority;</span><br><span class="line"></span><br><span class="line"><span class="comment">//传入需要的 device features</span></span><br><span class="line">VkPhysicalDeviceFeatures deviceFeatures&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//配置VkDeviceCreateInfo数据结构</span></span><br><span class="line">VkDeviceCreateInfo createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;</span><br><span class="line">createInfo.pQueueCreateInfos = &amp;queueCreateInfo;</span><br><span class="line">createInfo.queueCreateInfoCount = <span class="number">1</span>;</span><br><span class="line">createInfo.pEnabledFeatures = &amp;deviceFeatures;</span><br><span class="line">createInfo.enabledExtensionCount = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//创建逻辑设备device 类型是VkDevice </span></span><br><span class="line"><span class="built_in">vkCreateDevice</span>(physicalDevice, &amp;createInfo, <span class="literal">nullptr</span>, &amp;device);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在程序结束时需要释放资源</span></span><br><span class="line"><span class="built_in">vkDestroyDevice</span>(device, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取队列</span></span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(device, indices.graphicsFamily.<span class="built_in">value</span>(), <span class="number">0</span>, &amp;graphicsQueue);</span><br></pre></td></tr></table></figure>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li>创建逻辑设备的参数主要有：所需的队列属性的数据（VkDeviceQueueCreateInfo）、设备特征（VkPhysicalDeviceFeatures）等。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B04-Physicaldevices/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -643,329 +968,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/06/14/RTR4-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/06/14/RTR4-1/" class="post-title-link" itemprop="url">实时渲染笔记1-矩阵</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-06-14 22:21:17" itemprop="dateCreated datePublished" datetime="2022-06-14T22:21:17+08:00">2022-06-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-18 20:02:44" itemprop="dateModified" datetime="2022-09-18T20:02:44+08:00">2022-09-18</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RTR4/" itemprop="url" rel="index"><span itemprop="name">RTR4</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="矩阵学习"><a href="#矩阵学习" class="headerlink" title="矩阵学习"></a>矩阵学习</h1><h2 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵"></a>旋转矩阵</h2><p>绕x轴旋转（沿着x轴负方向观察，逆时针旋转）的矩阵是</p>
-<script type="math/tex; mode=display">
-R_{x}(\phi)=
-\begin{pmatrix}
- 1&0&0&0
-\\0&cos\phi&-sin\phi&0
- \\0& sin\phi&cos\phi&0
- \\0&0&0&1
-\end{pmatrix}</script><p>绕y轴旋转（沿着y轴负方向观察，逆时针旋转）的矩阵是</p>
-<script type="math/tex; mode=display">
-R_{y}(\phi)=
-\begin{pmatrix}
- cos\phi&0&sin\phi&0
-\\0&1&0&0
- \\-sin\phi&0&cos\phi&0
- \\0&0&0&1
-\end{pmatrix}</script><p>绕z轴旋转（沿着z轴负方向观察，逆时针旋转）的矩阵是</p>
-<script type="math/tex; mode=display">
-R_{z}(\phi)=
-\begin{pmatrix}
- cos\phi&-sin\phi&0&0
-\\sin\phi&cos\phi&0&0
- \\0&0&1&0
- \\0&0&0&1
-\end{pmatrix}</script><p>我们可以将其转换为一个3X3的旋转矩阵（删除最后一行和最后一列）。<br>对于每一个3X3的旋转矩阵，其迹（主对角线之和）为一个定值即：</p>
-<script type="math/tex; mode=display">
-tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交的。</p>
-<h2 id="缩放矩阵"><a href="#缩放矩阵" class="headerlink" title="缩放矩阵"></a>缩放矩阵</h2>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/" class="post-title-link" itemprop="url">浅谈FreeCAD中的模块</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-03-15 21:43:15 / 修改时间：22:00:49" itemprop="dateCreated datePublished" datetime="2022-03-15T21:43:15+08:00">2022-03-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="FreeCAD运行的三种模式"><a href="#FreeCAD运行的三种模式" class="headerlink" title="FreeCAD运行的三种模式"></a>FreeCAD运行的三种模式</h2><p>&emsp;&emsp;FreeCAD有三种运行模式，即命令行模式、脚本模式以及界面模式。针对于FreeCAD中每一个模块，都包括两个库，第一个库是App库主要是供脚本调用库，是无界面的功能实现库，第二个库是GUI库，该库是该模块的界面库，界面库是通过调用脚本库来实现功能的。</p>
-<h2 id="FreeCAD中的模块加载方法"><a href="#FreeCAD中的模块加载方法" class="headerlink" title="FreeCAD中的模块加载方法"></a>FreeCAD中的模块加载方法</h2><p>&emsp;&emsp;主要包含两个大问题：首先是每个模块的加载方法，其次是模块中接口的调用方法。</p>
-<h3 id="模块的加载方法"><a href="#模块的加载方法" class="headerlink" title="模块的加载方法"></a>模块的加载方法</h3><p>&emsp;&emsp; 加载模块需要遍历每一个模块，而遍历每一一个模块的方法在Application::runInitGuiScript(void)中，这个函数中运行了脚本FreeCADGuiInit.Py，在脚本中会运行函数InitApplications()，这个函数会遍历所有的模块，运行每一个模块的InitGui.py脚本，在该脚本中会运行Gui.addWorkbench(*Workbench())对应的C++代码是Application::sAddWorkbenchHandler，该函数在Gui模块里面进行了封装，对应的函数名就是addWorkbench。最终该WorkBench会被放入到Application的_pcWorkbenchDictionary一个字典列表中。</p>
-<h3 id="接口的调用方法"><a href="#接口的调用方法" class="headerlink" title="接口的调用方法"></a>接口的调用方法</h3><p>&emsp;&emsp;在python中运行一个导入模块的时候会首先运行Application::activateWorkbench函数，该函数中调用模块下面的InitGui.py文件中平台的Initialize函数，通过以下两句实现：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Py::Callable activate(handler.getAttr(std::string(&quot;Initialize&quot;)));</span><br><span class="line">activate.apply(args);</span><br></pre></td></tr></table></figure><br>Initialize函数才是真正加载该模块的方法。</p>
-<p>&emsp;&emsp;在Initialize函数中有会调用import 模块名，这会导致调用PyInit_模块名的函数。例如：针对PartGui 模块，Application::activateWorkbench会导致PartWorkbench中的Initialize被调用，进而导致import PartGui被调用，这会直接调用PyInit_PartGui函数。在FreeCAD的GUI模块中，通常该接口实现定义在App&#42;GUI.cpp 文件中（其中     &#42;表示模块名称），例如AppPartGUI.cpp 定义了PyInit_PartGui。</p>
-<p>&emsp;&emsp;PyInit_PartGui主要进行了如下的工作：</p>
-<p>1、加载脚本模块：import Part</p>
-<p>2、创建PartGui对应的python object。</p>
-<p>3、初始化PartGui中的类型。</p>
-<p>4、初始化Workbench，Workbench主要是创建菜单以及工具栏等操作。</p>
-<p>5、创建命令。</p>
-<p>6、加载资源。</p>
-<p>&emsp;&emsp;PyInit_PartGui最后会创建一个PyObject，也就是说会创建一个python的类。这样PartGui就可以当作python的一个模块，按照python的调用方式进行调用了。</p>
-<p>&emsp;&emsp;PPy::ExtensionModule<Module> 是C++封装为python工具PyCXX 提供的封装类，PartGui模块继承了Py::ExtensionModule<Module>也是就说采用的PyCXX的方式对C++进行封装的。</Module></Module></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/02/28/%E5%A3%AB%E5%A4%A7%E5%A4%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/28/%E5%A3%AB%E5%A4%A7%E5%A4%AB/" class="post-title-link" itemprop="url">中国士大夫</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-28 23:02:48 / 修改时间：23:03:25" itemprop="dateCreated datePublished" datetime="2022-02-28T23:02:48+08:00">2022-02-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/02/15/%E5%9B%BD%E4%B8%8E%E6%91%87%E7%AF%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/%E5%9B%BD%E4%B8%8E%E6%91%87%E7%AF%AE/" class="post-title-link" itemprop="url">国与摇篮</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-15 23:27:12" itemprop="dateCreated datePublished" datetime="2022-02-15T23:27:12+08:00">2022-02-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-15 21:47:14" itemprop="dateModified" datetime="2022-03-15T21:47:14+08:00">2022-03-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&emsp;&emsp;我记得从小学上社会课的时候，老师就一直在跟我们讲，中国是四大文明古国，当时觉得为自己的国家感到骄傲。但是随着长大发现，国家这个名字的含义其实并不简单。国字是一个口，一个戈，一个框，口代表的是人口，戈代表的是兵器框代表的是边界，这样国家最起码包含两层含义：首先是地理的概念，有了地理才有国的位置，再次必须有人，有了人才有了国家的灵魂。四大文明古国中的国应该是当时的地理以及当时在那个地方生活的人共同组成的，不过地方是永存的，但是人是流动的，现在一个地方的人和以前这个地方的人也许已经不是同一族群了，四大文明古国应该叫做四大文明摇篮更为合适，因为摇篮指的是一种地域概念，存在一定的不变性，而且具有客观性。</p>
-<p>&emsp;&emsp;历史课上，老师讲过距今二十万年前的北京人，八十万年前的陕西蓝田人以及一百五十万年前的云南元谋人，这些人其实和我们现在的人基本没有任何的关系，他们是直立人而我们是智人的后代，彼此之间存在着生成隔离。我们所有人的祖先是距今大约10万年前开始从非洲多次分批迁徙出来的（出非洲时大家应该都是黑色的）。人类在不断的迁徙，每个地域的人在不断的迭代，相互融合才有现代人类的样子。远古文明从中亚向世界扩散，就中国而言，先是扩散到中国北方，进而南下，大体上来说南方比北方更为纯种，无怪乎有人说唐朝的话更接近于粤语，而北方的话更接近于胡语。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1035,7 +1037,7 @@ tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

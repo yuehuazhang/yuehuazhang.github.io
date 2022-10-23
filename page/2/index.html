@@ -160,6 +160,329 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/06/14/RTR4-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/14/RTR4-1/" class="post-title-link" itemprop="url">实时渲染笔记1-矩阵</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-14 22:21:17" itemprop="dateCreated datePublished" datetime="2022-06-14T22:21:17+08:00">2022-06-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-09-18 20:02:44" itemprop="dateModified" datetime="2022-09-18T20:02:44+08:00">2022-09-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RTR4/" itemprop="url" rel="index"><span itemprop="name">RTR4</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="矩阵学习"><a href="#矩阵学习" class="headerlink" title="矩阵学习"></a>矩阵学习</h1><h2 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵"></a>旋转矩阵</h2><p>绕x轴旋转（沿着x轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{x}(\phi)=
+\begin{pmatrix}
+ 1&0&0&0
+\\0&cos\phi&-sin\phi&0
+ \\0& sin\phi&cos\phi&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>绕y轴旋转（沿着y轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{y}(\phi)=
+\begin{pmatrix}
+ cos\phi&0&sin\phi&0
+\\0&1&0&0
+ \\-sin\phi&0&cos\phi&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>绕z轴旋转（沿着z轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{z}(\phi)=
+\begin{pmatrix}
+ cos\phi&-sin\phi&0&0
+\\sin\phi&cos\phi&0&0
+ \\0&0&1&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>我们可以将其转换为一个3X3的旋转矩阵（删除最后一行和最后一列）。<br>对于每一个3X3的旋转矩阵，其迹（主对角线之和）为一个定值即：</p>
+<script type="math/tex; mode=display">
+tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交的。</p>
+<h2 id="缩放矩阵"><a href="#缩放矩阵" class="headerlink" title="缩放矩阵"></a>缩放矩阵</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/" class="post-title-link" itemprop="url">浅谈FreeCAD中的模块</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-15 21:43:15 / 修改时间：22:00:49" itemprop="dateCreated datePublished" datetime="2022-03-15T21:43:15+08:00">2022-03-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="FreeCAD运行的三种模式"><a href="#FreeCAD运行的三种模式" class="headerlink" title="FreeCAD运行的三种模式"></a>FreeCAD运行的三种模式</h2><p>&emsp;&emsp;FreeCAD有三种运行模式，即命令行模式、脚本模式以及界面模式。针对于FreeCAD中每一个模块，都包括两个库，第一个库是App库主要是供脚本调用库，是无界面的功能实现库，第二个库是GUI库，该库是该模块的界面库，界面库是通过调用脚本库来实现功能的。</p>
+<h2 id="FreeCAD中的模块加载方法"><a href="#FreeCAD中的模块加载方法" class="headerlink" title="FreeCAD中的模块加载方法"></a>FreeCAD中的模块加载方法</h2><p>&emsp;&emsp;主要包含两个大问题：首先是每个模块的加载方法，其次是模块中接口的调用方法。</p>
+<h3 id="模块的加载方法"><a href="#模块的加载方法" class="headerlink" title="模块的加载方法"></a>模块的加载方法</h3><p>&emsp;&emsp; 加载模块需要遍历每一个模块，而遍历每一一个模块的方法在Application::runInitGuiScript(void)中，这个函数中运行了脚本FreeCADGuiInit.Py，在脚本中会运行函数InitApplications()，这个函数会遍历所有的模块，运行每一个模块的InitGui.py脚本，在该脚本中会运行Gui.addWorkbench(*Workbench())对应的C++代码是Application::sAddWorkbenchHandler，该函数在Gui模块里面进行了封装，对应的函数名就是addWorkbench。最终该WorkBench会被放入到Application的_pcWorkbenchDictionary一个字典列表中。</p>
+<h3 id="接口的调用方法"><a href="#接口的调用方法" class="headerlink" title="接口的调用方法"></a>接口的调用方法</h3><p>&emsp;&emsp;在python中运行一个导入模块的时候会首先运行Application::activateWorkbench函数，该函数中调用模块下面的InitGui.py文件中平台的Initialize函数，通过以下两句实现：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Py::Callable activate(handler.getAttr(std::string(&quot;Initialize&quot;)));</span><br><span class="line">activate.apply(args);</span><br></pre></td></tr></table></figure><br>Initialize函数才是真正加载该模块的方法。</p>
+<p>&emsp;&emsp;在Initialize函数中有会调用import 模块名，这会导致调用PyInit_模块名的函数。例如：针对PartGui 模块，Application::activateWorkbench会导致PartWorkbench中的Initialize被调用，进而导致import PartGui被调用，这会直接调用PyInit_PartGui函数。在FreeCAD的GUI模块中，通常该接口实现定义在App&#42;GUI.cpp 文件中（其中     &#42;表示模块名称），例如AppPartGUI.cpp 定义了PyInit_PartGui。</p>
+<p>&emsp;&emsp;PyInit_PartGui主要进行了如下的工作：</p>
+<p>1、加载脚本模块：import Part</p>
+<p>2、创建PartGui对应的python object。</p>
+<p>3、初始化PartGui中的类型。</p>
+<p>4、初始化Workbench，Workbench主要是创建菜单以及工具栏等操作。</p>
+<p>5、创建命令。</p>
+<p>6、加载资源。</p>
+<p>&emsp;&emsp;PyInit_PartGui最后会创建一个PyObject，也就是说会创建一个python的类。这样PartGui就可以当作python的一个模块，按照python的调用方式进行调用了。</p>
+<p>&emsp;&emsp;PPy::ExtensionModule<Module> 是C++封装为python工具PyCXX 提供的封装类，PartGui模块继承了Py::ExtensionModule<Module>也是就说采用的PyCXX的方式对C++进行封装的。</Module></Module></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/02/28/%E5%A3%AB%E5%A4%A7%E5%A4%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/28/%E5%A3%AB%E5%A4%A7%E5%A4%AB/" class="post-title-link" itemprop="url">中国士大夫</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-28 23:02:48 / 修改时间：23:03:25" itemprop="dateCreated datePublished" datetime="2022-02-28T23:02:48+08:00">2022-02-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/02/15/%E5%9B%BD%E4%B8%8E%E6%91%87%E7%AF%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/15/%E5%9B%BD%E4%B8%8E%E6%91%87%E7%AF%AE/" class="post-title-link" itemprop="url">国与摇篮</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-15 23:27:12" itemprop="dateCreated datePublished" datetime="2022-02-15T23:27:12+08:00">2022-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-03-15 21:47:14" itemprop="dateModified" datetime="2022-03-15T21:47:14+08:00">2022-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp;我记得从小学上社会课的时候，老师就一直在跟我们讲，中国是四大文明古国，当时觉得为自己的国家感到骄傲。但是随着长大发现，国家这个名字的含义其实并不简单。国字是一个口，一个戈，一个框，口代表的是人口，戈代表的是兵器框代表的是边界，这样国家最起码包含两层含义：首先是地理的概念，有了地理才有国的位置，再次必须有人，有了人才有了国家的灵魂。四大文明古国中的国应该是当时的地理以及当时在那个地方生活的人共同组成的，不过地方是永存的，但是人是流动的，现在一个地方的人和以前这个地方的人也许已经不是同一族群了，四大文明古国应该叫做四大文明摇篮更为合适，因为摇篮指的是一种地域概念，存在一定的不变性，而且具有客观性。</p>
+<p>&emsp;&emsp;历史课上，老师讲过距今二十万年前的北京人，八十万年前的陕西蓝田人以及一百五十万年前的云南元谋人，这些人其实和我们现在的人基本没有任何的关系，他们是直立人而我们是智人的后代，彼此之间存在着生成隔离。我们所有人的祖先是距今大约10万年前开始从非洲多次分批迁徙出来的（出非洲时大家应该都是黑色的）。人类在不断的迁徙，每个地域的人在不断的迭代，相互融合才有现代人类的样子。远古文明从中亚向世界扩散，就中国而言，先是扩散到中国北方，进而南下，大体上来说南方比北方更为纯种，无怪乎有人说唐朝的话更接近于粤语，而北方的话更接近于胡语。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/01/17/Python%E4%B8%AD%E7%9A%84%E7%B1%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -616,7 +939,7 @@ P^{'}=\left (x^{'},y^{'},z^{'} \right)=\left ( x,y,z \right )*
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
