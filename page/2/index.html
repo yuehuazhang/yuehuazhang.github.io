@@ -738,7 +738,7 @@ tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-14 22:53:40" itemprop="dateModified" datetime="2021-07-14T22:53:40+08:00">2021-07-14</time>
+                <time title="修改时间：2022-10-23 21:02:05" itemprop="dateModified" datetime="2022-10-23T21:02:05+08:00">2022-10-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -786,7 +786,16 @@ P^{'}=\left (x^{'},y^{'},z^{'} \right)=\left ( x,y,z \right )*
  x_{1}^{'}&x_{2}^{'}&x_{3}^{'}
 \\y_{1}^{'}&y_{2}^{'}&y_{3}^{'}
  \\z_{1}^{'}&z_{2}^{'}&z_{3}^{'}
-\end{pmatrix}^{-1}</script><h2 id="矩阵与OpenGL"><a href="#矩阵与OpenGL" class="headerlink" title="矩阵与OpenGL"></a>矩阵与OpenGL</h2><p>&emsp;&emsp; 首先明确一下OpenGL中的几个坐标系。首先模型所在的坐标系（或者称之为局部空间，Local Space），其次世界坐标系（World Space），再次相机坐标系（也是观察坐标系，View Space），然后是裁剪坐标系（Clip Space）最后是屏幕坐标系（Screen Space）。OpenGL中要渲染的物体顶点的起始坐标按序经过上述5个坐标系系统最终转换为屏幕坐标。</p>
+\end{pmatrix}^{-1}</script><h2 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h2><h3 id="旋转矩阵的公式"><a href="#旋转矩阵的公式" class="headerlink" title="旋转矩阵的公式"></a>旋转矩阵的公式</h3><p>&emsp;&emsp; 设一个向量$v=\left (v_{x},v_{y},v_{z}\right)$在右手坐标系中绕一个轴$r=\left (r_{x},r_{y},r_{z} \right)$ 逆时针旋转$\phi$度（从轴的正方向往负方向看），其中$r$是一个单位向量。那么对应的旋转矩阵是：</p>
+<script type="math/tex; mode=display">
+R=
+\begin{pmatrix}
+ cos\phi+(1-cos\phi)*r_{x}^{2}&(1-cos\phi)*r_{x}*r_{y}-r_{z}sin\phi&(1-cos\phi)*r_{x}*r_{z}+r_{y}sin\phi
+\\(1-cos\phi)*r_{x}*r_{y}+r_{z}sin\phi&cos\phi+(1-cos\phi)*r_{y}^{2}&(1-cos\phi)*r_{y}*r_{z}-r_{x}sin\phi
+ \\(1-cos\phi)*r_{x}*r_{z}-r_{y}sin\phi&(1-cos\phi)*r_{y}*r_{z}+r_{x}sin\phi&cos\phi+(1-cos\phi)*r_{z}^{2}
+\end{pmatrix}</script><h3 id="四元数与旋转"><a href="#四元数与旋转" class="headerlink" title="四元数与旋转"></a>四元数与旋转</h3><p>&emsp;&emsp;设一个向量(或者点)$P=\left (p_{x},p_{y},p_{z},p_{w}\right)$,我们设其为一个四元组，假设我们还有一个单位四元组$Q=\left (sin\phi*u_{q},cos\phi\right)$,那么我们可以得到：</p>
+<script type="math/tex; mode=display">QPQ^{-1}</script><p>表示$P$绕着旋转轴$u_{q}$旋转$2\phi$得到的结果，其中$u_{q}$是一个单位向量。</p>
+<h2 id="矩阵与OpenGL"><a href="#矩阵与OpenGL" class="headerlink" title="矩阵与OpenGL"></a>矩阵与OpenGL</h2><p>&emsp;&emsp; 首先明确一下OpenGL中的几个坐标系。首先模型所在的坐标系（或者称之为局部空间，Local Space），其次世界坐标系（World Space），再次相机坐标系（也是观察坐标系，View Space），然后是裁剪坐标系（Clip Space）最后是屏幕坐标系（Screen Space）。OpenGL中要渲染的物体顶点的起始坐标按序经过上述5个坐标系系统最终转换为屏幕坐标。</p>
 
       
     </div>
