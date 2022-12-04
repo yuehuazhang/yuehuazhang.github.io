@@ -160,6 +160,246 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/11/07/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B010-%E5%9B%BA%E5%AE%9A%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/07/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B010-%E5%9B%BA%E5%AE%9A%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">Vulkan笔记-固定函数</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-07 20:59:19" itemprop="dateCreated datePublished" datetime="2022-11-07T20:59:19+08:00">2022-11-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-12-04 18:26:05" itemprop="dateModified" datetime="2022-12-04T18:26:05+08:00">2022-12-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第十节，主要讲解固定函数。</p>
+<h2 id="什么是固定函数"><a href="#什么是固定函数" class="headerlink" title="什么是固定函数"></a>什么是固定函数</h2><p>&emsp;&emsp; 可能大家听说过固定管线，在固定管线中有一些函数来控制当前状态，而在Vulkan中，也存在类似的函数，我们需要来进行操作，因为Vulkan需要用户做所有的事情。</p>
+<h2 id="顶点的输入"><a href="#顶点的输入" class="headerlink" title="顶点的输入"></a>顶点的输入</h2><p>&emsp;&emsp; VkPipelineVertexInputStateCreateInfo 结构用来描述即将传入顶点着色器的顶点的格式。大体上来说有两点：</p>
+<ul>
+<li>绑定，说明数据之间的间距以及顶点是逐顶点绑定还是逐实例绑定。</li>
+<li>属性说明，说明传递给顶点着色器的属性，从哪一个绑定加载以及从哪一个偏移加载。<br>下面是一段加载顶点的示例代码<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VkPipelineVertexInputStateCreateInfo vertexInputInfo&#123;&#125;;</span><br><span class="line">vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;</span><br><span class="line">vertexInputInfo.vertexBindingDescriptionCount = <span class="number">0</span>;</span><br><span class="line">vertexInputInfo.pVertexBindingDescriptions = <span class="literal">nullptr</span>; <span class="comment">// Optional</span></span><br><span class="line">vertexInputInfo.vertexAttributeDescriptionCount = <span class="number">0</span>;</span><br><span class="line">vertexInputInfo.pVertexAttributeDescriptions = <span class="literal">nullptr</span>; <span class="comment">// Optional</span></span><br></pre></td></tr></table></figure>
+<h2 id="组装的输入"><a href="#组装的输入" class="headerlink" title="组装的输入"></a>组装的输入</h2>&emsp;&emsp; 组装的输入用来说明两点：什么样的图形会被绘制，以及顶点能不能够复用。通过结构体VkPipelineInputAssemblyStateCreateInfo中的参数来进行设置。<br>下面是一段使用VkPipelineInputAssemblyStateCreateInfo的代码，用来绘制三角形。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VkPipelineInputAssemblyStateCreateInfo inputAssembly&#123;&#125;;</span><br><span class="line">inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;</span><br><span class="line">inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;</span><br><span class="line">inputAssembly.primitiveRestartEnable = VK_FALSE;</span><br></pre></td></tr></table></figure>
+<h2 id="视口和裁剪"><a href="#视口和裁剪" class="headerlink" title="视口和裁剪"></a>视口和裁剪</h2>&emsp;&emsp; 下面通过一段代码来说明视口和裁剪的使用方法。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//视口</span></span><br><span class="line">VkViewport viewport&#123;&#125;;</span><br><span class="line">viewport.x = <span class="number">0.0f</span>;</span><br><span class="line">viewport.y = <span class="number">0.0f</span>;</span><br><span class="line">viewport.width = (<span class="keyword">float</span>) swapChainExtent.width;</span><br><span class="line">viewport.height = (<span class="keyword">float</span>) swapChainExtent.height;</span><br><span class="line">viewport.minDepth = <span class="number">0.0f</span>;</span><br><span class="line">viewport.maxDepth = <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//裁剪</span></span><br><span class="line">VkRect2D scissor&#123;&#125;;</span><br><span class="line">scissor.offset = &#123;<span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">scissor.extent = swapChainExtent;</span><br><span class="line"></span><br><span class="line"><span class="comment">//数据输入</span></span><br><span class="line"> VkPipelineViewportStateCreateInfo viewportState&#123;&#125;;</span><br><span class="line">viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;</span><br><span class="line">viewportState.viewportCount = <span class="number">1</span>;</span><br><span class="line">viewportState.pViewports = &amp;viewport;</span><br><span class="line">viewportState.scissorCount = <span class="number">1</span>;</span><br><span class="line">viewportState.pScissors = &amp;scissor;</span><br></pre></td></tr></table></figure>
+<h2 id="光栅化器"><a href="#光栅化器" class="headerlink" title="光栅化器"></a>光栅化器</h2>&emsp;&emsp; 光栅化器将用从顶点着色器传入的用顶点描述的图形转换为片元描述的图形并传递给片元着色器。同时进行深度测试，面的拣选以及裁剪测试，同时决定图形是填充还是只渲染边。在Vulkan中通过使用VkPipelineRasterizationStateCreateInfo这个结构体来进行设置。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> VkPipelineRasterizationStateCreateInfo rasterizer&#123;&#125;;</span><br><span class="line">rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;</span><br><span class="line"><span class="comment">//如果depthClampEnable设置为true，那么如果片元超出远平面或者近平面，这些片元会吸附在远近平面上，而不是丢弃他们</span></span><br><span class="line">rasterizer.depthClampEnable = VK_FALSE;</span><br><span class="line"><span class="comment">//如果rasterizerDiscardEnable设置为true，那么所有的片远都会被丢弃</span></span><br><span class="line">rasterizer.rasterizerDiscardEnable = VK_FALSE;</span><br><span class="line"><span class="comment">//确定填充模式：填充：VK_POLYGON_MODE_FILL， VK_POLYGON_MODE_LINE绘制线， VK_POLYGON_MODE_POINT绘制点</span></span><br><span class="line">rasterizer.polygonMode = VK_POLYGON_MODE_FILL;</span><br><span class="line"><span class="comment">//线的粗细</span></span><br><span class="line">rasterizer.lineWidth = <span class="number">1.0f</span>;</span><br><span class="line"><span class="comment">//背面剔除选项</span></span><br><span class="line">rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;</span><br><span class="line"><span class="comment">//背面生成的方法</span></span><br><span class="line">rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;</span><br><span class="line"></span><br><span class="line"><span class="comment">//光栅化器可以通过添加一个恒定值或根据碎片的斜率对其进行偏移来改变深度值，阴影会使用比较多</span></span><br><span class="line">rasterizer.depthBiasEnable = VK_FALSE;</span><br><span class="line">rasterizer.depthBiasConstantFactor = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">rasterizer.depthBiasClamp = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">rasterizer.depthBiasSlopeFactor = <span class="number">0.0f</span>; <span class="comment">// Optional</span></span><br></pre></td></tr></table></figure>
+<h2 id="多重采样"><a href="#多重采样" class="headerlink" title="多重采样"></a>多重采样</h2>&emsp;&emsp;通过使用VkPipelineMultisampleStateCreateInfo来设置多重采样。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">VkPipelineMultisampleStateCreateInfo multisampling&#123;&#125;;</span><br><span class="line">multisampling.sType =</span><br><span class="line">VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;</span><br><span class="line">multisampling.sampleShadingEnable = VK_FALSE;</span><br><span class="line">multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;</span><br><span class="line">multisampling.minSampleShading = <span class="number">1.0f</span>; <span class="comment">// Optional</span></span><br><span class="line">multisampling.pSampleMask = <span class="literal">nullptr</span>; <span class="comment">// Optional</span></span><br><span class="line">multisampling.alphaToCoverageEnable = VK_FALSE; <span class="comment">// Optional</span></span><br><span class="line">multisampling.alphaToOneEnable = VK_FALSE; <span class="comment">// Opt</span></span><br></pre></td></tr></table></figure>
+目前暂时不用，后续再写。<h2 id="深度测试和模板测试"><a href="#深度测试和模板测试" class="headerlink" title="深度测试和模板测试"></a>深度测试和模板测试</h2>&emsp;&emsp; 如果你使用了深度以及模板测试，你需要设置VkPipelineDepthStencilStateCreateInfo这个结构体。<h2 id="颜色融合"><a href="#颜色融合" class="headerlink" title="颜色融合"></a>颜色融合</h2>&emsp;&emsp;颜色融合有两个途径。</li>
+<li>混合旧的和新的值形成最后的颜色。</li>
+<li>联合旧的颜色和新的颜色通过位运算。  </li>
+</ul>
+<p>这里有两个类型的结构体设置颜色混合：</p>
+<ul>
+<li>VkPipelineColorBlendAttachmentState 包含每一个帧缓冲的设置。</li>
+<li>VkPipelineColorBlendStateCreateInfo 全局的颜色融合设置。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">VkPipelineColorBlendAttachmentState colorBlendAttachment&#123;&#125;;</span><br><span class="line">colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT |</span><br><span class="line">VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |</span><br><span class="line">VK_COLOR_COMPONENT_A_BIT;</span><br><span class="line">colorBlendAttachment.blendEnable = VK_FALSE;</span><br><span class="line">colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE; <span class="comment">//</span></span><br><span class="line">Optional</span><br><span class="line">colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO; <span class="comment">//</span></span><br><span class="line">Optional</span><br><span class="line">colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD; <span class="comment">// Optional</span></span><br><span class="line">colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE; <span class="comment">//</span></span><br><span class="line">Optional</span><br><span class="line">colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO; <span class="comment">//</span></span><br><span class="line">Optional</span><br><span class="line">colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD; <span class="comment">// Optional</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//上面的操作类似于下面的伪代码</span></span><br><span class="line"><span class="keyword">if</span> (blendEnable) &#123;</span><br><span class="line">finalColor.rgb = (srcColorBlendFactor * newColor.rgb)</span><br><span class="line">&lt;colorBlendOp&gt; (dstColorBlendFactor * oldColor.rgb);</span><br><span class="line">finalColor.a = (srcAlphaBlendFactor * newColor.a) &lt;alphaBlendOp&gt;</span><br><span class="line">(dstAlphaBlendFactor * oldColor.a);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">finalColor = newColor;</span><br><span class="line">&#125;</span><br><span class="line">finalColor = finalColor &amp; colorWriteMask;</span><br></pre></td></tr></table></figure>
+<h2 id="动态状态"><a href="#动态状态" class="headerlink" title="动态状态"></a>动态状态</h2></li>
+</ul>
+<p>&emsp;&emsp; 我们在前面结构中指定的有限数量的状态实际上可以在不重新创建管道的情况下进行更改。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;VkDynamicState&gt; dynamicStates = &#123;</span><br><span class="line">VK_DYNAMIC_STATE_VIEWPORT,</span><br><span class="line">VK_DYNAMIC_STATE_LINE_WIDTH</span><br><span class="line">&#125;;</span><br><span class="line">VkPipelineDynamicStateCreateInfo dynamicState&#123;&#125;;</span><br><span class="line">dynamicState.sType =</span><br><span class="line">VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;</span><br><span class="line">dynamicState.dynamicStateCount =</span><br><span class="line"><span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(dynamicStates.<span class="built_in">size</span>());</span><br><span class="line">dynamicState.pDynamicStates = dynamicStates.<span class="built_in">data</span>();</span><br></pre></td></tr></table></figure><br>这将导致忽略这些值的配置，并要求您在绘图时指定数据。</p>
+<h2 id="管线布局"><a href="#管线布局" class="headerlink" title="管线布局"></a>管线布局</h2><p>&emsp;&emsp; 你可以在着色器中使用统一的值，这是类似于动态状态变量的全局变量，可以在绘制时更改，以改变着色器的行为，而不必重新创建它们。它们通常用于传递转换矩阵到顶点着色器，或在片段着色器中创建纹理采样器。<br>该功能在后续的章节中进行说明，现在只列一下代码。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">VkPipelineLayout pipelineLayout;</span><br><span class="line">And then create the object in the createGraphicsPipeline function:</span><br><span class="line">VkPipelineLayoutCreateInfo pipelineLayoutInfo&#123;&#125;;</span><br><span class="line">pipelineLayoutInfo.sType =</span><br><span class="line">VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;</span><br><span class="line">pipelineLayoutInfo.setLayoutCount = <span class="number">0</span>; <span class="comment">// Optional</span></span><br><span class="line">pipelineLayoutInfo.pSetLayouts = <span class="literal">nullptr</span>; <span class="comment">// Optional</span></span><br><span class="line">pipelineLayoutInfo.pushConstantRangeCount = <span class="number">0</span>; <span class="comment">// Optional</span></span><br><span class="line">pipelineLayoutInfo.pPushConstantRanges = <span class="literal">nullptr</span>; <span class="comment">// Optional</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">vkCreatePipelineLayout</span>(device, &amp;pipelineLayoutInfo, <span class="literal">nullptr</span>,</span><br><span class="line">&amp;pipelineLayout) != VK_SUCCESS) &#123;</span><br><span class="line"><span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create pipeline layout!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//清理</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanup</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="built_in">vkDestroyPipelineLayout</span>(device, pipelineLayout, <span class="literal">nullptr</span>);</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B09-%E7%9D%80%E8%89%B2%E5%99%A8%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B09-%E7%9D%80%E8%89%B2%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">Vulkan笔记-着色器模型</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-29 16:28:17" itemprop="dateCreated datePublished" datetime="2022-10-29T16:28:17+08:00">2022-10-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-07 20:58:53" itemprop="dateModified" datetime="2022-11-07T20:58:53+08:00">2022-11-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第九节，主要讲解着色器模型。</p>
+<h2 id="Vulkan中的着色器"><a href="#Vulkan中的着色器" class="headerlink" title="Vulkan中的着色器"></a>Vulkan中的着色器</h2><p>&emsp;&emsp; 不想早期的API接口，Vulkan中的着色器代码是字节码格式的，这种字节码格式被称作SPIR-V，这种格式可以用来写图形和计算着色器。使用字节码格式的好处是，由GPU供应商编写的将着色器代码转换为本机代码的编译器不会那么复杂。Khronos发布了他们自己的独立于供应商的编译器可以将GLSL转换为SPIR-V，这个编译器是glslc.exe。在Windows下面创建方法如下：<br>C:/VulkanSDK/x.x.x.x/Bin32/glslc.exe shader.vert -o vert.spv<br>C:/VulkanSDK/x.x.x.x/Bin32/glslc.exe shader.frag -o frag.spv<br>其中 shader.vert是顶点着色器，shader.frag是片元着色器。</p>
+<h2 id="Vulkan中加载以及创建着色器"><a href="#Vulkan中加载以及创建着色器" class="headerlink" title="Vulkan中加载以及创建着色器"></a>Vulkan中加载以及创建着色器</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//读取着色器数据函数</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> std::vector&lt;<span class="keyword">char</span>&gt; <span class="title">readFile</span><span class="params">(<span class="keyword">const</span> std::string&amp; filename)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="function">std::ifstream <span class="title">file</span><span class="params">(filename, std::ios::ate | std::ios::binary)</span></span>;</span><br><span class="line"><span class="keyword">if</span> (!file.<span class="built_in">is_open</span>()) </span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to open file!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">size_t</span> fileSize = (<span class="keyword">size_t</span>) file.<span class="built_in">tellg</span>();</span><br><span class="line"><span class="function">std::vector&lt;<span class="keyword">char</span>&gt; <span class="title">buffer</span><span class="params">(fileSize)</span></span>;</span><br><span class="line">file.<span class="built_in">seekg</span>(<span class="number">0</span>);</span><br><span class="line">file.<span class="built_in">read</span>(buffer.<span class="built_in">data</span>(), fileSize);</span><br><span class="line">file.<span class="built_in">close</span>();</span><br><span class="line"><span class="keyword">return</span> buffer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建着色器</span></span><br><span class="line"><span class="function">VkShaderModule <span class="title">createShaderModule</span><span class="params">(<span class="keyword">const</span> std::vector&lt;<span class="keyword">char</span>&gt;&amp; code)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">VkShaderModuleCreateInfo createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;</span><br><span class="line">createInfo.codeSize = code.<span class="built_in">size</span>();</span><br><span class="line">createInfo.pCode = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">uint32_t</span>*&gt;(code.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line">VkShaderModule shaderModule;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">vkCreateShaderModule</span>(device, &amp;createInfo, <span class="literal">nullptr</span>, &amp;shaderModule) != VK_SUCCESS) &#123;</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create shader module!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> shaderModule;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建顶点着色器</span></span><br><span class="line">VkPipelineShaderStageCreateInfo vertShaderStageInfo&#123;&#125;;</span><br><span class="line">vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;</span><br><span class="line">vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;</span><br><span class="line">vertShaderStageInfo.<span class="keyword">module</span> = vertShaderModule;</span><br><span class="line">vertShaderStageInfo.pName = <span class="string">&quot;main&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建片元着色器</span></span><br><span class="line">VkPipelineShaderStageCreateInfo fragShaderStageInfo&#123;&#125;;</span><br><span class="line">fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;</span><br><span class="line">fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;</span><br><span class="line">fragShaderStageInfo.<span class="keyword">module</span> = fragShaderModule;</span><br><span class="line">fragShaderStageInfo.pName = <span class="string">&quot;main&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建管线需要</span></span><br><span class="line">VkPipelineShaderStageCreateInfo shaderStages[] = &#123;vertShaderStageInfofragShaderStageInfo&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//销毁着色器</span></span><br><span class="line"><span class="built_in">vkDestroyShaderModule</span>(device, fragShaderModule, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkDestroyShaderModule</span>(device, vertShaderModule, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B08-Imageviews/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B08-Imageviews/" class="post-title-link" itemprop="url">Vulkan笔记-图像视图</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-29 16:04:00 / 修改时间：16:22:07" itemprop="dateCreated datePublished" datetime="2022-10-29T16:04:00+08:00">2022-10-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第八节，主要讲解图像视图相关操作。</p>
+<h2 id="什么是图像视图"><a href="#什么是图像视图" class="headerlink" title="什么是图像视图"></a>什么是图像视图</h2><p>&emsp;&emsp;  为了使用上节提到的VkImage,我们需要创建VkImageView物体。图像视图它描述了如何访问图像以及要访问图像的哪一部分。</p>
+<h2 id="创建窗口接口"><a href="#创建窗口接口" class="headerlink" title="创建窗口接口"></a>创建窗口接口</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//保存图像视图</span></span><br><span class="line">std::vector&lt;VkImageView&gt; swapChainImageViews;</span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">createImageViews</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line"><span class="comment">//确定图像视图有多少个</span></span><br><span class="line">swapChainImageViews.<span class="built_in">resize</span>(swapChainImages.<span class="built_in">size</span>());</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; swapChainImages.<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">    VkImageViewCreateInfo createInfo&#123;&#125;;</span><br><span class="line">    createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;</span><br><span class="line">    <span class="comment">//设置图像怎样来解析</span></span><br><span class="line">    createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;</span><br><span class="line">    createInfo.format = swapChainImageFormat;</span><br><span class="line">    createInfo.image = swapChainImages[i];</span><br><span class="line">    <span class="comment">//调整颜色通道</span></span><br><span class="line">    createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    <span class="comment">//描述图像的目的，以及图像的那一部分可用</span></span><br><span class="line">    createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;</span><br><span class="line">    createInfo.subresourceRange.baseMipLevel = <span class="number">0</span>;</span><br><span class="line">    createInfo.subresourceRange.levelCount = <span class="number">1</span>;</span><br><span class="line">    createInfo.subresourceRange.baseArrayLayer = <span class="number">0</span>;</span><br><span class="line">    createInfo.subresourceRange.layerCount = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//创建图像视图</span></span><br><span class="line">    <span class="built_in">vkCreateImageView</span>(device, &amp;createInfo, <span class="literal">nullptr</span>, &amp;swapChainImageViews[i])；</span><br><span class="line"></span><br><span class="line">    <span class="comment">//程序的最后需要销毁图像视图</span></span><br><span class="line">    <span class="built_in">vkDestroyImageView</span>(device, imageView, <span class="literal">nullptr</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/18/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B07-Swapchain/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -716,262 +956,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01-install/" class="post-title-link" itemprop="url">Vulkan笔记-API安装</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-10-15 11:14:40 / 修改时间：15:53:36" itemprop="dateCreated datePublished" datetime="2022-10-15T11:14:40+08:00">2022-10-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&emsp;&emsp; 这是Vulkan学习的第一节，怎样安装VulkanAPI，由于我使用的是Windows,我这里只讲述Windows的安装。</p>
-<h2 id="需要库介绍"><a href="#需要库介绍" class="headerlink" title="需要库介绍"></a>需要库介绍</h2><h3 id="Vulkan-SDK"><a href="#Vulkan-SDK" class="headerlink" title="Vulkan SDK"></a>Vulkan SDK</h3><ul>
-<li>安装： 我们可以从LunarG网站上面下载Vulkan的SDK，安装方法也是傻瓜式的安装。</li>
-<li>判断当前电脑是否支持Vulkan:在SDK的安装目录下面运行一下vkcube.exe这个demo，如果可以正常运行那么表示当前显卡支持Vulkan。</li>
-<li>安装目录下有用的工具：glslangValidator.exe以及 glslc.exe，这两个工具分别是用于编译顶点着色器以及片元着色器为字节码，后续使用时再详细介绍。<h3 id="GLFW"><a href="#GLFW" class="headerlink" title="GLFW"></a>GLFW</h3>Vulkan与窗口无关，所以需要一个窗口创建的库。GLFW可以用于创建Window界面。<h3 id="GLM"><a href="#GLM" class="headerlink" title="GLM"></a>GLM</h3>GLM是一个矩阵操作库，他是一个模板库，也就是说其只有头文件。<h3 id="创建开发工程"><a href="#创建开发工程" class="headerlink" title="创建开发工程"></a>创建开发工程</h3></li>
-<li>使用VS创建一个Console Application，并添加一个CPP文件。</li>
-<li>设置include目录：C++ -&gt; General -&gt; Additional Include Directories 将Vulkan、GLFW和GLM的头文件目录已经其他需要引用的头文件路径添加进去。</li>
-<li>添加附加包含目录：需要使用的库所在的目录。</li>
-<li>添加附加依赖库，包括：glfW3.lib（静态库文件）、vulkan-1.lib。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/09/24/Blender%E4%B8%AD%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/24/Blender%E4%B8%AD%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="post-title-link" itemprop="url">Blender中的快捷键学习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-09-24 10:22:58" itemprop="dateCreated datePublished" datetime="2022-09-24T10:22:58+08:00">2022-09-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-09-25 18:42:53" itemprop="dateModified" datetime="2022-09-25T18:42:53+08:00">2022-09-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Blender/" itemprop="url" rel="index"><span itemprop="name">Blender</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Blender中的快捷键学习"><a href="#Blender中的快捷键学习" class="headerlink" title="Blender中的快捷键学习"></a>Blender中的快捷键学习</h1><h2 id="平移"><a href="#平移" class="headerlink" title="平移"></a>平移</h2><ul>
-<li>选中物体，按住G键移动鼠标进行物体平移。</li>
-<li>选中物体，按住G键，然后按X/Y/Z键，移动鼠标，物体会沿着X/Y/Z轴进行平移。</li>
-<li>选中物体，按住G键，然后按X/Y/Z键，然后输入数值（正负都可）物体会沿着X/Y/Z轴平移相应的距离。<h2 id="缩放"><a href="#缩放" class="headerlink" title="缩放"></a>缩放</h2></li>
-<li>选中物体，按住S键，实现物体缩放。</li>
-<li>选中物体，按住S键，然后按X/Y/Z键，移动鼠标，物体会沿着X/Y/Z轴进行缩放。</li>
-<li>选中物体，按住S键，然后按X/Y/Z键，然后输入数值（正负都可）物体会沿着X/Y/Z轴缩放相应的大小。</li>
-<li>在编辑物体的模式下Atrl+S 进行法向缩放。<h2 id="游标"><a href="#游标" class="headerlink" title="游标"></a>游标</h2></li>
-<li>游标定义：游标是新建几何体的中心。</li>
-<li>按住Shift+C键 游标回复到坐标中心。</li>
-<li>按住Shift同时点击鼠标右键，游标移动到鼠标点击位置。<h2 id="选择以及删除"><a href="#选择以及删除" class="headerlink" title="选择以及删除"></a>选择以及删除</h2></li>
-<li>A键全选。</li>
-<li>X键删除选中的物体。<h2 id="切换"><a href="#切换" class="headerlink" title="切换"></a>切换</h2></li>
-<li>tab键切换物体环境和编辑环境。</li>
-<li>按Z键，切换显示模式（线框、实体、材质预览、渲染预览等）。</li>
-<li>编辑环境下：可以拾取点、线、面，切换的快捷键是1（点），2（线），3（面）。</li>
-<li>Alt+Z切换透视模式。透视模式下容易对背面进行选择。</li>
-<li>几个视图的切换：小键盘1是前视图（Ctrl+1反向），小键盘3是右视图（Ctrl+1反向），小键盘7是顶视图（Ctrl+1反向），小键盘9是底视图（Ctrl+1反向）。</li>
-<li>按~键也可以切换视图。<h2 id="创建以及编辑几何体"><a href="#创建以及编辑几何体" class="headerlink" title="创建以及编辑几何体"></a>创建以及编辑几何体</h2></li>
-<li>Shift+A 创建几何体。</li>
-<li>在编辑模式下按E挤出。</li>
-<li>Ctrl+R 循环切割，按鼠标左键移动切换的位置，按鼠标左键后点右键切割到中心，点击鼠标滚轮可以产生多条切割线。</li>
-<li>选中面，点击键盘i键，产生内插面。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/09/18/FreeCAD%E6%A8%A1%E5%9D%97%E5%8A%A0%E8%BD%BD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/18/FreeCAD%E6%A8%A1%E5%9D%97%E5%8A%A0%E8%BD%BD/" class="post-title-link" itemprop="url">FreeCAD 模块加载</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-09-18 18:36:41 / 修改时间：18:49:50" itemprop="dateCreated datePublished" datetime="2022-09-18T18:36:41+08:00">2022-09-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="FreeCAD运行的三种模式"><a href="#FreeCAD运行的三种模式" class="headerlink" title="FreeCAD运行的三种模式"></a>FreeCAD运行的三种模式</h2><p>&emsp;&emsp; FreeCAD有三种运行模式，即命令行模式、脚本模式以及界面模式。针对于FreeCAD中每一个模块，都包括两个库，第一个库是App库主要是供脚本调用库，是无界面的功能实现库，第二个库是GUI库，该库是该模块的界面库，界面库是通过调用脚本库来实现功能的。</p>
-<h2 id="FreeCAD中的模块加载方法"><a href="#FreeCAD中的模块加载方法" class="headerlink" title="FreeCAD中的模块加载方法"></a>FreeCAD中的模块加载方法</h2><h3 id="每个模块的加载方法。"><a href="#每个模块的加载方法。" class="headerlink" title="每个模块的加载方法。"></a>每个模块的加载方法。</h3><p>&emsp;&emsp;FreeCAD启动的时候会遍历安装目录mod文件夹下面的文件，该遍历的实现位于Application::runInitGuiScript(void)中。<br>这个函数中运行了脚本FreeCADGuiInit.Py，在脚本中会运行函数InitApplications()，这个函数会遍历所有的模块，运行每一个模块的InitGui.py脚本，在该脚本中会运行Gui.addWorkbench(*Workbench())对应的C++代码是Application::sAddWorkbenchHandler，该函数在Gui模块里面进行了封装，对应的函数名就是addWorkbench。最终该WorkBench会被放入到Application的_pcWorkbenchDictionary一个字典列表中。</p>
-<h3 id="模块中接口的调用方法。"><a href="#模块中接口的调用方法。" class="headerlink" title="模块中接口的调用方法。"></a>模块中接口的调用方法。</h3><p>&emsp;&emsp; 在python中运行一个导入模块的时候会首先运行Application::activateWorkbench函数，该函数中调用模块下面的InitGui.py文件中平台的Initialize函数，通过以下两句实现：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Py::Callable activate(handler.getAttr(std::string(&quot;Initialize&quot;)));</span><br><span class="line">activate.apply(args);</span><br></pre></td></tr></table></figure><br>Initialize函数才是真正加载该模块的方法。<br>&emsp;&emsp; 在Initialize函数中有会调用import 模块名，这会导致调用PyInit_模块名的函数。例如：针对PartGui模块，Application::activateWorkbench会导致PartWorkbench中的Initialize被调用，进而导致import PartGui被调用，这会直接调用PyInit_PartGui函数。在FreeCAD的GUI模块中，通常该接口实现定义在App<em>GUI.cpp 文件中（其中</em>表示模块名称），例如AppPartGUI.cpp 定义了PyInit_PartGui。<br>PyInit_PartGui主要进行了如下的工作：</p>
-<ul>
-<li>加载脚本模块：import Part</li>
-<li>创建PartGui对应的python object。</li>
-<li>初始化PartGui中的类型。</li>
-<li>初始化Workbench，Workbench主要是创建菜单以及工具栏等操作。</li>
-<li>创建命令。</li>
-<li>加载资源。<br>&emsp;&emsp; PyInit_PartGui最后会创建一个PyObject，也就是说会创建一个python的类。这样PartGui就可以当作python的一个模块，按照python的调用方式进行调用了。<br>&emsp;&emsp;  Py::ExtensionModule<Module> 是C++封装为python工具PyCXX 提供的封装类，PartGui模块继承了Py::ExtensionModule<Module>也是就说采用的PyCXX的方式对C++进行封装的。</Module></Module></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1037,7 +1025,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

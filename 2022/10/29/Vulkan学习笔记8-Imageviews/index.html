@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="爱琴文明爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。 特洛伊-欧洲史的开端&amp;emsp;&amp;emsp; 大家可能都听说过特洛伊战争，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在">
+  <meta name="description" content="&amp;emsp;&amp;emsp; 这是Vulkan学习的第八节，主要讲解图像视图相关操作。 什么是图像视图&amp;emsp;&amp;emsp;  为了使用上节提到的VkImage,我们需要创建VkImageView物体。图像视图它描述了如何访问图像以及要访问图像的哪一部分。 创建窗口接口1234567891011121314151617181920212223242526272829303132&#x2F;&#x2F;保存图像视图std">
 <meta property="og:type" content="article">
-<meta property="og:title" content="欧洲史之爱琴文明">
-<meta property="og:url" content="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/index.html">
+<meta property="og:title" content="Vulkan笔记-图像视图">
+<meta property="og:url" content="https://yuehuazhang.github.io/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B08-Imageviews/index.html">
 <meta property="og:site_name" content="Yeha的博客">
-<meta property="og:description" content="爱琴文明爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。 特洛伊-欧洲史的开端&amp;emsp;&amp;emsp; 大家可能都听说过特洛伊战争，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 这是Vulkan学习的第八节，主要讲解图像视图相关操作。 什么是图像视图&amp;emsp;&amp;emsp;  为了使用上节提到的VkImage,我们需要创建VkImageView物体。图像视图它描述了如何访问图像以及要访问图像的哪一部分。 创建窗口接口1234567891011121314151617181920212223242526272829303132&#x2F;&#x2F;保存图像视图std">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-10-16T08:36:07.508Z">
-<meta property="article:modified_time" content="2022-10-23T10:08:46.531Z">
+<meta property="article:published_time" content="2022-10-29T08:04:00.658Z">
+<meta property="article:modified_time" content="2022-10-29T08:22:07.770Z">
 <meta property="article:author" content="Yeha">
-<meta property="article:tag" content="历史">
+<meta property="article:tag" content="Vulkan学习">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/">
+<link rel="canonical" href="https://yuehuazhang.github.io/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B08-Imageviews/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>欧洲史之爱琴文明 | Yeha的博客</title>
+  <title>Vulkan笔记-图像视图 | Yeha的博客</title>
   
 
 
@@ -166,7 +166,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B08-Imageviews/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +179,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          欧洲史之爱琴文明
+          Vulkan笔记-图像视图
         </h1>
 
         <div class="post-meta">
@@ -188,23 +188,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-10-16 16:36:07" itemprop="dateCreated datePublished" datetime="2022-10-16T16:36:07+08:00">2022-10-16</time>
+              <time title="创建时间：2022-10-29 16:04:00 / 修改时间：16:22:07" itemprop="dateCreated datePublished" datetime="2022-10-29T16:04:00+08:00">2022-10-29</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-10-23 18:08:46" itemprop="dateModified" datetime="2022-10-23T18:08:46+08:00">2022-10-23</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
                 </span>
             </span>
 
@@ -219,11 +213,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="爱琴文明"><a href="#爱琴文明" class="headerlink" title="爱琴文明"></a>爱琴文明</h1><p>爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。</p>
-<h2 id="特洛伊-欧洲史的开端"><a href="#特洛伊-欧洲史的开端" class="headerlink" title="特洛伊-欧洲史的开端"></a>特洛伊-欧洲史的开端</h2><p>&emsp;&emsp; 大家可能都听说过<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/特洛伊战争">特洛伊战争</a>，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在，特洛伊战争仅仅是一个人们想象的神话故事，这个认识在19世纪末被打破，打破这个认识首先归功于海因里希.谢里曼。他首先发现了特洛伊城的遗址位于土耳其西北部的西萨利克并且发现了阿伽门农的神庙。特洛伊城的发现使欧洲的文明时间大大提前，也是人们研究欧洲史前文明的开端。</p>
-<h2 id="阶段划分"><a href="#阶段划分" class="headerlink" title="阶段划分"></a>阶段划分</h2><h2 id="米诺斯文明"><a href="#米诺斯文明" class="headerlink" title="米诺斯文明"></a>米诺斯文明</h2><p>&emsp;&emsp; 米诺斯文明主要集中于克里特岛，开始于公元前3500年，复杂的城市文明在公元前2000年开始，在公元前1450年开始衰落（这个时期迈锡尼人开始从希腊本土来到克里特岛），在约公元前1100年完结。米诺斯文明被称为“欧洲文明的第一环”。<br>&emsp;&emsp; 米诺斯人可以建筑高达四层的建筑，建筑中拥有精致的管道系统以及壁画。目前发现的最大建筑是克诺索斯宫殿（始建于公元前20世纪，多次扩建，有迷宫之称）。米诺斯人以从事海外贸易为主。米诺斯文明使用的文字可能使用的是目前仍未破解的线性文字A，该文字的使用始于公元前1800年。<br>&emsp;&emsp; 米诺斯对神的崇拜主要是对女性神祀的崇拜，很可能继承问题也是母系的。<br>&emsp;&emsp; 米诺斯人喜欢一种运动，叫做跳牛运动，该运动可能也是神话故事人物米诺陶名称的来源。</p>
-<h2 id="迈锡尼文明"><a href="#迈锡尼文明" class="headerlink" title="迈锡尼文明"></a>迈锡尼文明</h2><p>&emsp;&emsp; 迈锡尼文明是希腊本土的文明，它由伯罗奔尼撒半岛的迈锡尼城而得名。是古希腊青铜时代后期的一个文明。</p>
-
+        <p>&emsp;&emsp; 这是Vulkan学习的第八节，主要讲解图像视图相关操作。</p>
+<h2 id="什么是图像视图"><a href="#什么是图像视图" class="headerlink" title="什么是图像视图"></a>什么是图像视图</h2><p>&emsp;&emsp;  为了使用上节提到的VkImage,我们需要创建VkImageView物体。图像视图它描述了如何访问图像以及要访问图像的哪一部分。</p>
+<h2 id="创建窗口接口"><a href="#创建窗口接口" class="headerlink" title="创建窗口接口"></a>创建窗口接口</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//保存图像视图</span></span><br><span class="line">std::vector&lt;VkImageView&gt; swapChainImageViews;</span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">createImageViews</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line"><span class="comment">//确定图像视图有多少个</span></span><br><span class="line">swapChainImageViews.<span class="built_in">resize</span>(swapChainImages.<span class="built_in">size</span>());</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; swapChainImages.<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">    VkImageViewCreateInfo createInfo&#123;&#125;;</span><br><span class="line">    createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;</span><br><span class="line">    <span class="comment">//设置图像怎样来解析</span></span><br><span class="line">    createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;</span><br><span class="line">    createInfo.format = swapChainImageFormat;</span><br><span class="line">    createInfo.image = swapChainImages[i];</span><br><span class="line">    <span class="comment">//调整颜色通道</span></span><br><span class="line">    createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;</span><br><span class="line">    <span class="comment">//描述图像的目的，以及图像的那一部分可用</span></span><br><span class="line">    createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;</span><br><span class="line">    createInfo.subresourceRange.baseMipLevel = <span class="number">0</span>;</span><br><span class="line">    createInfo.subresourceRange.levelCount = <span class="number">1</span>;</span><br><span class="line">    createInfo.subresourceRange.baseArrayLayer = <span class="number">0</span>;</span><br><span class="line">    createInfo.subresourceRange.layerCount = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//创建图像视图</span></span><br><span class="line">    <span class="built_in">vkCreateImageView</span>(device, &amp;createInfo, <span class="literal">nullptr</span>, &amp;swapChainImageViews[i])；</span><br><span class="line"></span><br><span class="line">    <span class="comment">//程序的最后需要销毁图像视图</span></span><br><span class="line">    <span class="built_in">vkDestroyImageView</span>(device, imageView, <span class="literal">nullptr</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -232,7 +224,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%8E%86%E5%8F%B2/" rel="tag"># 历史</a>
+              <a href="/tags/Vulkan%E5%AD%A6%E4%B9%A0/" rel="tag"># Vulkan学习</a>
           </div>
 
         
@@ -241,12 +233,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/10/16/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-Logicaldevice/" rel="prev" title="Vulkan笔记-逻辑设备以及队列">
-      <i class="fa fa-chevron-left"></i> Vulkan笔记-逻辑设备以及队列
+    <a href="/2022/10/18/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B07-Swapchain/" rel="prev" title="Vulkan笔记-交换链">
+      <i class="fa fa-chevron-left"></i> Vulkan笔记-交换链
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/10/17/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B06-Windowsurface/" rel="next" title="Vulkan笔记-逻辑设备以及队列">
-      Vulkan笔记-逻辑设备以及队列 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/10/29/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B09-%E7%9D%80%E8%89%B2%E5%99%A8%E6%A8%A1%E5%9E%8B/" rel="next" title="Vulkan笔记-着色器模型">
+      Vulkan笔记-着色器模型 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -306,7 +298,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">爱琴文明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%B4%9B%E4%BC%8A-%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%9A%84%E5%BC%80%E7%AB%AF"><span class="nav-number">1.1.</span> <span class="nav-text">特洛伊-欧洲史的开端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E5%88%92%E5%88%86"><span class="nav-number">1.2.</span> <span class="nav-text">阶段划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%B3%E8%AF%BA%E6%96%AF%E6%96%87%E6%98%8E"><span class="nav-number">1.3.</span> <span class="nav-text">米诺斯文明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%88%E9%94%A1%E5%B0%BC%E6%96%87%E6%98%8E"><span class="nav-number">1.4.</span> <span class="nav-text">迈锡尼文明</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%9B%BE%E5%83%8F%E8%A7%86%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">什么是图像视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%AA%97%E5%8F%A3%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.</span> <span class="nav-text">创建窗口接口</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
