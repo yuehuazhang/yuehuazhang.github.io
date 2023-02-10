@@ -160,6 +160,390 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/17/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B06-Windowsurface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/17/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B06-Windowsurface/" class="post-title-link" itemprop="url">Vulkan笔记-逻辑设备以及队列</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-17 20:27:08 / 修改时间：21:11:49" itemprop="dateCreated datePublished" datetime="2022-10-17T20:27:08+08:00">2022-10-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第六节，主要讲解Vulkan怎样创建与窗口交互的操作。</p>
+<h2 id="什么是窗口接口"><a href="#什么是窗口接口" class="headerlink" title="什么是窗口接口"></a>什么是窗口接口</h2><p>&emsp;&emsp; 由于Vulkan 是一个与平台无关的API，他不能直接和窗口系统进行交互。为了建立窗口系统和VulKan的联系，我们需要WSI(Window System Integration) 扩展。在这里我们主要讲VK_KHR_surface扩展。由于界面是和系统有关的，在Windows下面，对应的扩展是VK_KHR_win32_surface。</p>
+<h3 id="创建窗口接口"><a href="#创建窗口接口" class="headerlink" title="创建窗口接口"></a>创建窗口接口</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建窗口接口</span></span><br><span class="line"> VkWin32SurfaceCreateInfoKHR createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;</span><br><span class="line">createInfo.hwnd = <span class="built_in">glfwGetWin32Window</span>(window);</span><br><span class="line">createInfo.hinstance = <span class="built_in">GetModuleHandle</span>(<span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkCreateWin32SurfaceKHR</span>(instance, &amp;createInfo, <span class="literal">nullptr</span>,&amp;surface)</span><br><span class="line"><span class="comment">//程序结束时需要释放接口资源</span></span><br><span class="line"><span class="built_in">vkDestroySurfaceKHR</span>(instance, surface, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="选择支持窗口的设备"><a href="#选择支持窗口的设备" class="headerlink" title="选择支持窗口的设备"></a>选择支持窗口的设备</h3><p>&emsp;&emsp; 并不是所有的设备都支持窗口。由于是否支持渲染呈现到窗口上是一个队列的属性，所以我们判断一个设备是否支持窗口关键是判断这个设备中是否存在支持窗口的队列簇。</p>
+<h4 id="选择支持窗口设备的代码"><a href="#选择支持窗口设备的代码" class="headerlink" title="选择支持窗口设备的代码"></a>选择支持窗口设备的代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//判断支持绘制和窗口的结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">QueueFamilyIndices</span> &#123;</span></span><br><span class="line">std::optional&lt;<span class="keyword">uint32_t</span>&gt; graphicsFamily;</span><br><span class="line">std::optional&lt;<span class="keyword">uint32_t</span>&gt; presentFamily;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isComplete</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">return</span> graphicsFamily.<span class="built_in">has_value</span>() &amp;&amp;</span><br><span class="line">presentFamily.<span class="built_in">has_value</span>();</span><br><span class="line">&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//查找分别满足绘制和窗口的队列簇</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; queueFamily : queueFamilies) &#123;</span><br><span class="line">    <span class="keyword">if</span> (queueFamily.queueFlags &amp; VK_QUEUE_GRAPHICS_BIT) &#123;</span><br><span class="line">        indices.graphicsFamily = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断支持窗口的函数</span></span><br><span class="line">    VkBool32 presentSupport = <span class="literal">false</span>;</span><br><span class="line">    <span class="built_in">vkGetPhysicalDeviceSurfaceSupportKHR</span>(device, i, surface, &amp;presentSupport);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (presentSupport) &#123;</span><br><span class="line">        indices.presentFamily = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (indices.<span class="built_in">isComplete</span>()) &#123;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    i++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取满足绘制以及窗口的队列的句柄</span></span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(device, indices.graphicsFamily.<span class="built_in">value</span>(), <span class="number">0</span>, &amp;graphicsQueue);</span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(device, indices.presentFamily.<span class="built_in">value</span>(), <span class="number">0</span>, &amp;presentQueue);</span><br></pre></td></tr></table></figure>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><ul>
+<li>由于支持窗口和支持绘制的队列簇不一定重合，所以我们我们用graphicsFamily以及presentFamily分别表示支持绘制和支持窗口。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/16/%E6%AC%A7%E6%B4%B2%E5%8F%B2%E7%AC%94%E8%AE%B01-%E7%88%B1%E7%90%B4%E6%96%87%E6%98%8E/" class="post-title-link" itemprop="url">欧洲史之爱琴文明</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-16 16:36:07" itemprop="dateCreated datePublished" datetime="2022-10-16T16:36:07+08:00">2022-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-23 18:08:46" itemprop="dateModified" datetime="2022-10-23T18:08:46+08:00">2022-10-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="爱琴文明"><a href="#爱琴文明" class="headerlink" title="爱琴文明"></a>爱琴文明</h1><p>爱琴文明主要分为两个阶段：米诺斯文明、迈锡尼文明。</p>
+<h2 id="特洛伊-欧洲史的开端"><a href="#特洛伊-欧洲史的开端" class="headerlink" title="特洛伊-欧洲史的开端"></a>特洛伊-欧洲史的开端</h2><p>&emsp;&emsp; 大家可能都听说过<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/特洛伊战争">特洛伊战争</a>，该战争主要在荷马写的两部史诗《伊利亚特》和《奥德赛》中进行描述，尽管这两部史诗大部分都是虚构的。希腊人、罗马人和其他欧洲民族都从与特洛伊有关的战争中溯源，可以说特洛伊战争标志着欧洲史的开端。想要熟悉欧洲史必须得熟悉特洛伊战争。 在很早以前，人们认为特洛伊城根本不存在，特洛伊战争仅仅是一个人们想象的神话故事，这个认识在19世纪末被打破，打破这个认识首先归功于海因里希.谢里曼。他首先发现了特洛伊城的遗址位于土耳其西北部的西萨利克并且发现了阿伽门农的神庙。特洛伊城的发现使欧洲的文明时间大大提前，也是人们研究欧洲史前文明的开端。</p>
+<h2 id="阶段划分"><a href="#阶段划分" class="headerlink" title="阶段划分"></a>阶段划分</h2><h2 id="米诺斯文明"><a href="#米诺斯文明" class="headerlink" title="米诺斯文明"></a>米诺斯文明</h2><p>&emsp;&emsp; 米诺斯文明主要集中于克里特岛，开始于公元前3500年，复杂的城市文明在公元前2000年开始，在公元前1450年开始衰落（这个时期迈锡尼人开始从希腊本土来到克里特岛），在约公元前1100年完结。米诺斯文明被称为“欧洲文明的第一环”。<br>&emsp;&emsp; 米诺斯人可以建筑高达四层的建筑，建筑中拥有精致的管道系统以及壁画。目前发现的最大建筑是克诺索斯宫殿（始建于公元前20世纪，多次扩建，有迷宫之称）。米诺斯人以从事海外贸易为主。米诺斯文明使用的文字可能使用的是目前仍未破解的线性文字A，该文字的使用始于公元前1800年。<br>&emsp;&emsp; 米诺斯对神的崇拜主要是对女性神祀的崇拜，很可能继承问题也是母系的。<br>&emsp;&emsp; 米诺斯人喜欢一种运动，叫做跳牛运动，该运动可能也是神话故事人物米诺陶名称的来源。</p>
+<h2 id="迈锡尼文明"><a href="#迈锡尼文明" class="headerlink" title="迈锡尼文明"></a>迈锡尼文明</h2><p>&emsp;&emsp; 迈锡尼文明是希腊本土的文明，它由伯罗奔尼撒半岛的迈锡尼城而得名。是古希腊青铜时代后期的一个文明。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/16/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-Logicaldevice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/16/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B05-Logicaldevice/" class="post-title-link" itemprop="url">Vulkan笔记-逻辑设备以及队列</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-16 09:17:21" itemprop="dateCreated datePublished" datetime="2022-10-16T09:17:21+08:00">2022-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-17 20:27:02" itemprop="dateModified" datetime="2022-10-17T20:27:02+08:00">2022-10-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第五节，主要讲解逻辑设备的创建以及队列的创建以及使用。</p>
+<h2 id="选择物理设备"><a href="#选择物理设备" class="headerlink" title="选择物理设备"></a>选择物理设备</h2><p>&emsp;&emsp; 在选择完成物理设备以后，我们需要创建一个逻辑设备与物理设备进行连接。我们甚至可以根据实际需要，针对一个物理设备创建多个逻辑设备。</p>
+<h3 id="创建逻辑设备"><a href="#创建逻辑设备" class="headerlink" title="创建逻辑设备"></a>创建逻辑设备</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//寻找满足要求的队列簇</span></span><br><span class="line"> QueueFamilyIndices indices = <span class="built_in">findQueueFamilies</span>(physicalDevice);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建设备队列，需要输入满足队列簇的索引</span></span><br><span class="line">VkDeviceQueueCreateInfo queueCreateInfo&#123;&#125;;</span><br><span class="line">queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;</span><br><span class="line">queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.<span class="built_in">value</span>();</span><br><span class="line">queueCreateInfo.queueCount = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置优先级</span></span><br><span class="line"><span class="keyword">float</span> queuePriority = <span class="number">1.0f</span>;</span><br><span class="line">queueCreateInfo.pQueuePriorities = &amp;queuePriority;</span><br><span class="line"></span><br><span class="line"><span class="comment">//传入需要的 device features</span></span><br><span class="line">VkPhysicalDeviceFeatures deviceFeatures&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//配置VkDeviceCreateInfo数据结构</span></span><br><span class="line">VkDeviceCreateInfo createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;</span><br><span class="line">createInfo.pQueueCreateInfos = &amp;queueCreateInfo;</span><br><span class="line">createInfo.queueCreateInfoCount = <span class="number">1</span>;</span><br><span class="line">createInfo.pEnabledFeatures = &amp;deviceFeatures;</span><br><span class="line">createInfo.enabledExtensionCount = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//创建逻辑设备device 类型是VkDevice </span></span><br><span class="line"><span class="built_in">vkCreateDevice</span>(physicalDevice, &amp;createInfo, <span class="literal">nullptr</span>, &amp;device);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在程序结束时需要释放资源</span></span><br><span class="line"><span class="built_in">vkDestroyDevice</span>(device, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取队列</span></span><br><span class="line"><span class="built_in">vkGetDeviceQueue</span>(device, indices.graphicsFamily.<span class="built_in">value</span>(), <span class="number">0</span>, &amp;graphicsQueue);</span><br></pre></td></tr></table></figure>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li>创建逻辑设备的参数主要有：所需的队列属性的数据（VkDeviceQueueCreateInfo）、设备特征（VkPhysicalDeviceFeatures）等。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B04-Physicaldevices/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B04-Physicaldevices/" class="post-title-link" itemprop="url">Vulkan笔记-物理设备和队列簇</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-15 17:45:32 / 修改时间：20:31:46" itemprop="dateCreated datePublished" datetime="2022-10-15T17:45:32+08:00">2022-10-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第四节，主要讲解物理设备以及队列族的创建以及两者的意义。</p>
+<h2 id="选择物理设备"><a href="#选择物理设备" class="headerlink" title="选择物理设备"></a>选择物理设备</h2><p>&emsp;&emsp; 创建Instance后,我们需要选择一个合适的显卡设备。实际中可以选择多个显卡并同时使用他们。</p>
+<h3 id="选择物理设备代码"><a href="#选择物理设备代码" class="headerlink" title="选择物理设备代码"></a>选择物理设备代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//选择的物理设备的句柄，可以理解为在程序中物理设备的标识</span></span><br><span class="line">VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查找当前设备中显卡个数</span></span><br><span class="line"><span class="keyword">uint32_t</span> deviceCount = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">vkEnumeratePhysicalDevices</span>(instance, &amp;deviceCount, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取当前多有可用显卡设备的句柄</span></span><br><span class="line"><span class="function">std::vector&lt;VkPhysicalDevice&gt; <span class="title">devices</span><span class="params">(deviceCount)</span></span>;</span><br><span class="line"><span class="built_in">vkEnumeratePhysicalDevices</span>(instance, &amp;deviceCount, devices.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据句柄获取物理设备的属性</span></span><br><span class="line">kPhysicalDeviceProperties deviceProperties;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceProperties</span>(device, &amp;deviceProperties);</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据句柄获取物理设备的特征</span></span><br><span class="line">VkPhysicalDeviceFeatures deviceFeatures;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceFeatures</span>(device, &amp;deviceFeatures);</span><br></pre></td></tr></table></figure>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li>设备的属性（kPhysicalDeviceProperties）与设备的特征（VkPhysicalDeviceFeatures）区别：设备的特征说明了设备更为具体的属性，比如是否支持logicOp以及多视口渲染等，设备的属性更多的是说明一些限制（例如纹理最大尺寸等）以及设备标识（例如供应商标识）等。</li>
+</ul>
+<h2 id="队列簇"><a href="#队列簇" class="headerlink" title="队列簇"></a>队列簇</h2><h3 id="什么是队列族"><a href="#什么是队列族" class="headerlink" title="什么是队列族"></a>什么是队列族</h3><p>&emsp;&emsp; 在Vulkan中，任何操作（比如绘制以及加载纹理等）需要将对应的命令提交到一个队列中。不同类型的命令要提交到不同类型的队列中。也就说VulKan中有多个队列，这些队列我们成为队列簇。我们需要找到整个队列簇的一个子集，这个子集要满足我们要提交命令类型的需要。</p>
+<h3 id="队列族的查询代码"><a href="#队列族的查询代码" class="headerlink" title="队列族的查询代码"></a>队列族的查询代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取所选择的物理设备中队列簇的数量</span></span><br><span class="line"><span class="keyword">uint32_t</span> queueFamilyCount = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceQueueFamilyProperties</span>(device, &amp;queueFamilyCount,</span><br><span class="line"><span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取所有队列簇的属性</span></span><br><span class="line"><span class="function">std::vector&lt;VkQueueFamilyProperties&gt; <span class="title">queueFamilies</span><span class="params">(queueFamilyCount)</span></span>;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceQueueFamilyProperties</span>(device, &amp;queueFamilyCount,</span><br><span class="line">queueFamilies.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//找到满足VK_QUEUE_GRAPHICS_BIT的队列即可</span></span><br><span class="line">queueFamily.queueFlags &amp; VK_QUEUE_GRAPHICS_BIT</span><br></pre></td></tr></table></figure>
+<h3 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h3><ul>
+<li>选择合适的显卡设备时，在该设备中能否找到满足要求的队列簇也是一个判断当前物理设备是否合适的重要因素。</li>
+<li>当前的显卡都是GUGPU显卡，不仅有显示的功能，可能还有计算等其他功能，我们是要做显示用，所以寻找满足VK_QUEUE_GRAPHICS_BIT的队列簇。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03-instance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B03-instance/" class="post-title-link" itemprop="url">Vulkan笔记-Instance</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-15 16:28:15 / 修改时间：17:53:37" itemprop="dateCreated datePublished" datetime="2022-10-15T16:28:15+08:00">2022-10-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>&emsp;&emsp; 这是Vulkan学习的第三节，主要讲解Instance的创建过程。</p>
+<h2 id="什么是Instance"><a href="#什么是Instance" class="headerlink" title="什么是Instance"></a>什么是Instance</h2><p>&emsp;&emsp; 针对于VulKan程序，首先应该是初始化VulKan库，而初始化工作就是通过创建Instance来实现的。Instance是应用程序和VulKan库之间的链接，创建Instance包括应用程序向图形驱动说明一些具体的使用细节。</p>
+<h3 id="创建的代码"><a href="#创建的代码" class="headerlink" title="创建的代码"></a>创建的代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//首先需要有表示Instance的变量</span></span><br><span class="line">VkInstance instance;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过VkApplicationInfo向驱动提供一些信息 </span></span><br><span class="line">VkApplicationInfo appInfo&#123;&#125;;</span><br><span class="line">appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;</span><br><span class="line">appInfo.pApplicationName = <span class="string">&quot;Hello Triangle&quot;</span>; </span><br><span class="line">appInfo.applicationVersion = <span class="built_in">VK_MAKE_VERSION</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">appInfo.pEngineName = <span class="string">&quot;No Engine&quot;</span>; </span><br><span class="line">appInfo.engineVersion = <span class="built_in">VK_MAKE_VERSION</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">appInfo.apiVersion = VK_API_VERSION_1_0;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建Instance</span></span><br><span class="line">VkInstanceCreateInfo createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;</span><br><span class="line">createInfo.pApplicationInfo = &amp;appInfo;</span><br><span class="line"></span><br><span class="line"><span class="comment">//扩展的加载</span></span><br><span class="line">createInfo.enabledExtensionCount = glfwExtensionCount;</span><br><span class="line">createInfo.ppEnabledExtensionNames = glfwExtensions;</span><br><span class="line">createInfo.enabledLayerCount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">vkCreateInstance</span>(&amp;createInfo, <span class="literal">nullptr</span>, &amp;instance) != VK_SUCCESS) &#123;</span><br><span class="line">    <span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;failed to create instance!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在程序结束时需要销毁instance</span></span><br><span class="line"><span class="built_in">vkDestroyInstance</span>(instance, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li>关于扩展，由于Vulkan是与窗口无关的，所以创建的时候需要外部输入关于窗口的信息到Vulkan库中，这个就是扩展，glfw提供了查找当前系统扩展的接口glfwGetRequiredInstanceExtensions。在我的电脑中返回了两个的扩展：    VK_KHR_surface 以及VK_KHR_win32_surface。</li>
+<li>VkInstanceCreateInfo还有一个参数enabledLayerCount这个函数和在Debug下面调试有关，不过不是所有的驱动都会支持该选项，所以关于关于Validation layers暂时不讨论。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02-frame/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -590,376 +974,6 @@ tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/" class="post-title-link" itemprop="url">浅谈FreeCAD中的模块</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-03-15 21:43:15 / 修改时间：22:00:49" itemprop="dateCreated datePublished" datetime="2022-03-15T21:43:15+08:00">2022-03-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="FreeCAD运行的三种模式"><a href="#FreeCAD运行的三种模式" class="headerlink" title="FreeCAD运行的三种模式"></a>FreeCAD运行的三种模式</h2><p>&emsp;&emsp;FreeCAD有三种运行模式，即命令行模式、脚本模式以及界面模式。针对于FreeCAD中每一个模块，都包括两个库，第一个库是App库主要是供脚本调用库，是无界面的功能实现库，第二个库是GUI库，该库是该模块的界面库，界面库是通过调用脚本库来实现功能的。</p>
-<h2 id="FreeCAD中的模块加载方法"><a href="#FreeCAD中的模块加载方法" class="headerlink" title="FreeCAD中的模块加载方法"></a>FreeCAD中的模块加载方法</h2><p>&emsp;&emsp;主要包含两个大问题：首先是每个模块的加载方法，其次是模块中接口的调用方法。</p>
-<h3 id="模块的加载方法"><a href="#模块的加载方法" class="headerlink" title="模块的加载方法"></a>模块的加载方法</h3><p>&emsp;&emsp; 加载模块需要遍历每一个模块，而遍历每一一个模块的方法在Application::runInitGuiScript(void)中，这个函数中运行了脚本FreeCADGuiInit.Py，在脚本中会运行函数InitApplications()，这个函数会遍历所有的模块，运行每一个模块的InitGui.py脚本，在该脚本中会运行Gui.addWorkbench(*Workbench())对应的C++代码是Application::sAddWorkbenchHandler，该函数在Gui模块里面进行了封装，对应的函数名就是addWorkbench。最终该WorkBench会被放入到Application的_pcWorkbenchDictionary一个字典列表中。</p>
-<h3 id="接口的调用方法"><a href="#接口的调用方法" class="headerlink" title="接口的调用方法"></a>接口的调用方法</h3><p>&emsp;&emsp;在python中运行一个导入模块的时候会首先运行Application::activateWorkbench函数，该函数中调用模块下面的InitGui.py文件中平台的Initialize函数，通过以下两句实现：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Py::Callable activate(handler.getAttr(std::string(&quot;Initialize&quot;)));</span><br><span class="line">activate.apply(args);</span><br></pre></td></tr></table></figure><br>Initialize函数才是真正加载该模块的方法。</p>
-<p>&emsp;&emsp;在Initialize函数中有会调用import 模块名，这会导致调用PyInit_模块名的函数。例如：针对PartGui 模块，Application::activateWorkbench会导致PartWorkbench中的Initialize被调用，进而导致import PartGui被调用，这会直接调用PyInit_PartGui函数。在FreeCAD的GUI模块中，通常该接口实现定义在App&#42;GUI.cpp 文件中（其中     &#42;表示模块名称），例如AppPartGUI.cpp 定义了PyInit_PartGui。</p>
-<p>&emsp;&emsp;PyInit_PartGui主要进行了如下的工作：</p>
-<p>1、加载脚本模块：import Part</p>
-<p>2、创建PartGui对应的python object。</p>
-<p>3、初始化PartGui中的类型。</p>
-<p>4、初始化Workbench，Workbench主要是创建菜单以及工具栏等操作。</p>
-<p>5、创建命令。</p>
-<p>6、加载资源。</p>
-<p>&emsp;&emsp;PyInit_PartGui最后会创建一个PyObject，也就是说会创建一个python的类。这样PartGui就可以当作python的一个模块，按照python的调用方式进行调用了。</p>
-<p>&emsp;&emsp;PPy::ExtensionModule<Module> 是C++封装为python工具PyCXX 提供的封装类，PartGui模块继承了Py::ExtensionModule<Module>也是就说采用的PyCXX的方式对C++进行封装的。</Module></Module></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/02/28/%E5%A3%AB%E5%A4%A7%E5%A4%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/28/%E5%A3%AB%E5%A4%A7%E5%A4%AB/" class="post-title-link" itemprop="url">中国士大夫</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-02-28 23:02:48 / 修改时间：23:03:25" itemprop="dateCreated datePublished" datetime="2022-02-28T23:02:48+08:00">2022-02-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/02/15/%E5%9B%BD%E4%B8%8E%E6%91%87%E7%AF%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/15/%E5%9B%BD%E4%B8%8E%E6%91%87%E7%AF%AE/" class="post-title-link" itemprop="url">国与摇篮</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-15 23:27:12" itemprop="dateCreated datePublished" datetime="2022-02-15T23:27:12+08:00">2022-02-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-15 21:47:14" itemprop="dateModified" datetime="2022-03-15T21:47:14+08:00">2022-03-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8E%86%E5%8F%B2/" itemprop="url" rel="index"><span itemprop="name">历史</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&emsp;&emsp;我记得从小学上社会课的时候，老师就一直在跟我们讲，中国是四大文明古国，当时觉得为自己的国家感到骄傲。但是随着长大发现，国家这个名字的含义其实并不简单。国字是一个口，一个戈，一个框，口代表的是人口，戈代表的是兵器框代表的是边界，这样国家最起码包含两层含义：首先是地理的概念，有了地理才有国的位置，再次必须有人，有了人才有了国家的灵魂。四大文明古国中的国应该是当时的地理以及当时在那个地方生活的人共同组成的，不过地方是永存的，但是人是流动的，现在一个地方的人和以前这个地方的人也许已经不是同一族群了，四大文明古国应该叫做四大文明摇篮更为合适，因为摇篮指的是一种地域概念，存在一定的不变性，而且具有客观性。</p>
-<p>&emsp;&emsp;历史课上，老师讲过距今二十万年前的北京人，八十万年前的陕西蓝田人以及一百五十万年前的云南元谋人，这些人其实和我们现在的人基本没有任何的关系，他们是直立人而我们是智人的后代，彼此之间存在着生成隔离。我们所有人的祖先是距今大约10万年前开始从非洲多次分批迁徙出来的（出非洲时大家应该都是黑色的）。人类在不断的迁徙，每个地域的人在不断的迭代，相互融合才有现代人类的样子。远古文明从中亚向世界扩散，就中国而言，先是扩散到中国北方，进而南下，大体上来说南方比北方更为纯种，无怪乎有人说唐朝的话更接近于粤语，而北方的话更接近于胡语。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/01/17/Python%E4%B8%AD%E7%9A%84%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/17/Python%E4%B8%AD%E7%9A%84%E7%B1%BB/" class="post-title-link" itemprop="url">Python中的类</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-01-17 21:44:05 / 修改时间：22:14:48" itemprop="dateCreated datePublished" datetime="2022-01-17T21:44:05+08:00">2022-01-17</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>&emsp;&emsp;本博客回答以下两个问题：<br>1、python中一切都是对象，那么python中的对象又是怎么表示的。<br>2、Python中不同对象的类型又是怎样表示的。</p>
-<h2 id="Python中的对象"><a href="#Python中的对象" class="headerlink" title="Python中的对象"></a>Python中的对象</h2><p>&emsp;&emsp;在python中，可以说所有的对象都是PyObject，python的结构如下所示：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Typedef struct _object &#123;  </span><br><span class="line">Int ob_refcnt;  </span><br><span class="line">Struct _typeobject* ob_type;  </span><br><span class="line">&#125; PybObject;  </span><br></pre></td></tr></table></figure><br>其中ob_refcnt是一个引用计数，和python的垃圾回收机制有关。而ob_type就是我们在第二个问题中会谈到的python中的类型。<br>&emsp;&emsp;我们说所有对象都是PyObject，并不是说每个对象都是PyObject结构体，而是说针对于python中的每一种类型，其开头都是PyObject。比如python中的int类型结构如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">PyObject,</span><br><span class="line">Long ob_ival;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>另外python还有变长类型的类，比如字符串等。这类对象通常都会包含pyVarObject的结构体，这个结构体表示如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">PyObject，</span><br><span class="line">Int ob_size</span><br><span class="line">&#125; pyVarObject</span><br></pre></td></tr></table></figure><br>ob_size表示的是容纳元素的个数，而不是占用内存的大小。这样的好处在于我们用指针指向一个类的实例的时候，指向的前几个字节都是一样的。</p>
-<h2 id="python对象的类型"><a href="#python对象的类型" class="headerlink" title="python对象的类型"></a>python对象的类型</h2><p>&emsp;&emsp;Python中对象的类型是PythonTypeObject,PythonTypeObject结构如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Typedef struct _typeobject &#123;</span><br><span class="line">PyObject_VAR_HEAD</span><br><span class="line">Char* tp_name;</span><br><span class="line">int tp_basicsize,tp_itemsize;</span><br><span class="line">destructor tp_dealloc;</span><br><span class="line">Printfunc tp_call;</span><br><span class="line">...</span><br><span class="line">Hashfunc tp_hash;</span><br><span class="line">Ternaryfunc tp_call;</span><br><span class="line">... </span><br><span class="line">&#125;PyTypeObject;</span><br></pre></td></tr></table></figure><br>PyTypeObject中主要包含了四类信息：类型名、创建该类时需要的内存大小、与该类型对象相关的操作信息、类型的类型信息。有了类型我们就可以根据类型创建对应的类了。比如：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyObject* intObj = PyObject_New(PyObject,&amp;PyInt_type);</span><br></pre></td></tr></table></figure><br>&emsp;&emsp;在众多的PyTypeObject对象中，有一个对象特别重要，他就是PyType_Type，所有的类型中都有该对象，该对象是表明包含该对象的对象是一个类型对象。<br>&emsp;&emsp; 类型对象可以理解方法，而对象可以理解为数据，这样就实现了方法与数据的分离。</p>
-<h2 id="python对象的多态性"><a href="#python对象的多态性" class="headerlink" title="python对象的多态性"></a>python对象的多态性</h2><p>&emsp;&emsp;下面以打印函数为例讲述python对象多态性的实现：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void Print(PyObject* object)</span><br><span class="line">&#123;</span><br><span class="line">    object-&gt;ob_type-&gt;tp_print(object);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>由于object对象和其对应的类型对象绑定（也就是ob_type）,因此会调用绑定类型对象的相关函数实现对应的操作。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/01/05/FreeCAD%E7%B1%BB%E5%9E%8B%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/01/05/FreeCAD%E7%B1%BB%E5%9E%8B%E5%8A%A8%E6%80%81%E5%88%9B%E5%BB%BA/" class="post-title-link" itemprop="url">FreeCAD中类型的动态创建</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-01-05 23:52:34" itemprop="dateCreated datePublished" datetime="2022-01-05T23:52:34+08:00">2022-01-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-06 00:08:29" itemprop="dateModified" datetime="2022-01-06T00:08:29+08:00">2022-01-06</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FreeCAD/" itemprop="url" rel="index"><span itemprop="name">FreeCAD</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&emsp;&emsp;在我们读取数据时，会根据保存的数据的内容创建对应的类，从而正确的读取数据，根据保存数据创建类就是一种类的动态创建。本博客下面主要讲述FreeCAD中类的动态创建过程。</p>
-<h2 id="实现动态创建的重要材料"><a href="#实现动态创建的重要材料" class="headerlink" title="实现动态创建的重要材料"></a>实现动态创建的重要材料</h2><p>&emsp;&emsp;在FreeCAD的type.cpp文件中，和动态创建非常相关的几个变量或者说类我们先介绍一下：<br>Type 类：这个类中封装了类的一般操作，比如创建实例，查找其父类等，这个类会和一个具体的类绑定，通过该类创建出对应的类，这个类应该是动态创建的接口类。<br>TypeData类： 是保存对应的绑定类的具体数据的类，Type 类应该说是对TypeData类操作的一个接口，TypeData中包含一个Type 类型的变量。<br>Type类中有两个非常重要的静态变量：<br>map<string,unsigned int>   Type::typemap;<br>vector<TypeData*>        Type::typedata;<br>这两个变量最终保存了注册类的名称以及创建类的函数。<br>&emsp;&emsp;FreeCAD所有的类型都是继承自BaseClass类，这个类中有一个静态的Type即classTypeId（子类中会重写覆盖），正是通过这个，所有的类型和Type绑定，实现的动态创建的相关操作。<br>&emsp;&emsp;所有继承自BaseClass类的类都有一个宏 TYPESYSTEM_HEADER();该宏重新声明了以下函数：<br>static Base::Type getClassTypeId(void);<br>static void init(void);<br>static void *create(void);<br>以及一个变量<br>static Base::Type classTypeId；<br>这些变量在基类中就存在，重新声明会覆盖掉以前的函数以及变量。后面我们会看到这几个函数和变量在该类型的动态创建很有关系。在类的实现中我们可以看到这个宏的定义类似如下所示：<br>TYPESYSTEM_SOURCE(Base::AbortException,Base::Exception)<br>这个是TYPESYSTEM_HEADER宏声明的实现。<br>有了以上宏定义的内容，我们就可以实现动态创建了。</TypeData*></string,unsigned></p>
-<h2 id="动态创建的实现"><a href="#动态创建的实现" class="headerlink" title="动态创建的实现"></a>动态创建的实现</h2><p>&emsp;&emsp;动态创建的一个基本的思路是这样的：针对一个类首先得有一个注册，注册的目的是将一个类名和类型实例创建的函数（static）绑定，同时保存在一个容器里面。下面是具体的创建方式。<br>&emsp;&emsp;我们注册一个变量的时候会调用其init函数这个函数的实现在TYPESYSTEM_SOURCE中，这个函数主要进行了以下的操作：<br>&emsp;&emsp;创建了一个TypeData，这个TypeData将类名、该类的父类的Type以及创建方法进行了保存。同时将这个创建的TypeData放入Type::typedata中。另外将类名以及在Type::typedata中的索引保存到Type::typemap中。<br>在实际读取数据中，具体过程是这样的：<br>当读到一个类名的时候，会调用Type::createInstanceByName 函数，在这个函数中，会根据读取的类的名称在Type::typemap找到对应的索引，通过对应的索引在Type::typedata中找到对应的TypeData，TypeData中保存该类的创建函数，那么我们调用创建函数就可以创建出该类来。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1029,7 +1043,7 @@ tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
