@@ -160,6 +160,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2023/02/12/%E6%8A%80%E6%9C%AF%E6%9D%82%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/02/12/%E6%8A%80%E6%9C%AF%E6%9D%82%E8%AE%B0/" class="post-title-link" itemprop="url">技术杂技</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-02-12 11:26:16 / 修改时间：11:35:59" itemprop="dateCreated datePublished" datetime="2023-02-12T11:26:16+08:00">2023-02-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">技术笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="技术笔记"><a href="#技术笔记" class="headerlink" title="技术笔记"></a>技术笔记</h1><h2 id="内存知识"><a href="#内存知识" class="headerlink" title="内存知识"></a>内存知识</h2><h3 id="内存可见"><a href="#内存可见" class="headerlink" title="内存可见"></a>内存可见</h3><h3 id="Vulkan-SDK"><a href="#Vulkan-SDK" class="headerlink" title="Vulkan SDK"></a>Vulkan SDK</h3><ul>
+<li>安装： 我们可以从LunarG网站上面下载Vulkan的SDK，安装方法也是傻瓜式的安装。</li>
+<li>判断当前电脑是否支持Vulkan:在SDK的安装目录下面运行一下vkcube.exe这个demo，如果可以正常运行那么表示当前显卡支持Vulkan。</li>
+<li>安装目录下有用的工具：glslangValidator.exe以及 glslc.exe，这两个工具分别是用于编译顶点着色器以及片元着色器为字节码，后续使用时再详细介绍。<h3 id="GLFW"><a href="#GLFW" class="headerlink" title="GLFW"></a>GLFW</h3>Vulkan与窗口无关，所以需要一个窗口创建的库。GLFW可以用于创建Window界面。<h3 id="GLM"><a href="#GLM" class="headerlink" title="GLM"></a>GLM</h3>GLM是一个矩阵操作库，他是一个模板库，也就是说其只有头文件。<h3 id="创建开发工程"><a href="#创建开发工程" class="headerlink" title="创建开发工程"></a>创建开发工程</h3></li>
+<li>使用VS创建一个Console Application，并添加一个CPP文件。</li>
+<li>设置include目录：C++ -&gt; General -&gt; Additional Include Directories 将Vulkan、GLFW和GLM的头文件目录已经其他需要引用的头文件路径添加进去。</li>
+<li>添加附加包含目录：需要使用的库所在的目录。</li>
+<li>添加附加依赖库，包括：glfW3.lib（静态库文件）、vulkan-1.lib。</li>
+</ul>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2023/02/10/%E5%8D%97%E5%8C%97%E5%B7%AE%E5%BC%82/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -272,7 +348,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/02/08/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B014-%E6%B8%B2%E6%9F%93%E5%92%8C%E5%91%88%E7%8E%B0/" class="post-title-link" itemprop="url">Vulkan笔记-命令缓存</a>
+            <a href="/2023/02/08/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B014-%E6%B8%B2%E6%9F%93%E5%92%8C%E5%91%88%E7%8E%B0/" class="post-title-link" itemprop="url">Vulkan笔记-渲染和呈现</a>
         </h2>
 
         <div class="post-meta">
@@ -281,10 +357,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-02-08 21:23:29 / 修改时间：21:31:35" itemprop="dateCreated datePublished" datetime="2023-02-08T21:23:29+08:00">2023-02-08</time>
+              <time title="创建时间：2023-02-08 21:23:29" itemprop="dateCreated datePublished" datetime="2023-02-08T21:23:29+08:00">2023-02-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-14 22:08:47" itemprop="dateModified" datetime="2023-02-14T22:08:47+08:00">2023-02-14</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -313,9 +395,26 @@
 <li>从交换链中获取一个映像。</li>
 <li>记录一个将场景绘制到图像上的命令缓冲区。</li>
 <li>提交记录的命令缓冲区。</li>
-<li>显示交换链映像。<br>这个是我们渲染循环的核心。<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><h2 id="栅栏"><a href="#栅栏" class="headerlink" title="栅栏"></a>栅栏</h2><h2 id="怎样来选择"><a href="#怎样来选择" class="headerlink" title="怎样来选择"></a>怎样来选择</h2><h2 id="创建同步的物体"><a href="#创建同步的物体" class="headerlink" title="创建同步的物体"></a>创建同步的物体</h2><h2 id="等待前一帧完成"><a href="#等待前一帧完成" class="headerlink" title="等待前一帧完成"></a>等待前一帧完成</h2><h2 id="从交换链中获取图像"><a href="#从交换链中获取图像" class="headerlink" title="从交换链中获取图像"></a>从交换链中获取图像</h2><h2 id="记录命令缓冲"><a href="#记录命令缓冲" class="headerlink" title="记录命令缓冲"></a>记录命令缓冲</h2><h2 id="提交命令缓冲"><a href="#提交命令缓冲" class="headerlink" title="提交命令缓冲"></a>提交命令缓冲</h2></li>
+<li>显示交换链映像。<br>这个是我们渲染循环的核心。<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2>&emsp;&emsp;Vulkan的核心设计理念是同步执行GPU是显式的。操作的顺序由我们使用各种同步原语来定义，这些原语告诉驱动程序我们想要运行的顺序。这意味着许多开始在GPU上执行工作的Vulkan API调用是异步的，函数将在操作完成之前返回。在本章中，我们需要明确地对一些事件进行排序，因为它们发生在GPU上，例如:</li>
+<li>从交换链中获取一个图片。</li>
+<li>执行在获取的图像上绘制的命令。</li>
+<li>将该图像呈现到屏幕上进行显示，并将其返回到交换链。<br>&emsp;&emsp;这些事件中的每一个都是使用单个函数调用进行设置的，但都是异步执行的。函数调用将在操作实际完成之前返回，并且执行顺序也未定义。这是不幸的，因为每一个操作都依赖于前一个操作的完成。因此，我们需要探索可以使用哪些原语来实现所需的排序。<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2>&emsp;&emsp;信号量用于在队列操作之间添加顺序。队列操作指的是我们提交给队列的工作，可以是在命令缓冲区中，也可以是在函数中，稍后我们将看到。队列的例子有图形队列和表示队列。信号量既用于在同一队列内排序，也用于在不同队列之间排序。队列的例子有图形队列和表示队列。信号量既用于在同一队列内排序，也用于在不同队列之间排序。在Vulkan中有两种信号量，二进制和时间轴。因为本教程只使用二进制信号量，所以我们将不讨论时间轴信号量。进一步提到的信号量这个术语专门指二进制信号量。<br>&emsp;&emsp;信号量要么是无信号的，要么是有信号的。它一开始是没有信号的。我们使用信号量来排序队列操作的方法是在一个队列操作中提供相同的信号量作为“信号”信号量，在另一个队列操作中提供相同的信号量作为“等待”信号量。例如，我们有一个信号量S和队列操作A和B，我们想要按顺序执行。我们告诉Vulkan的是，操作A在完成执行时将给信号量S“发信号”，而操作B将等信号量S在开始执行之前。当操作A结束时，信号量S将被发出信号。而操作B直到S收到信号才会开始。操作B开始执行后，信号量S将自动重置为无信号状态，允许再次使用。代码如下：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VkCommandBuffer A, B = ... <span class="comment">// record command buffers</span></span><br><span class="line">VkSemaphore S = ... <span class="comment">// create a semaphore</span></span><br><span class="line"><span class="comment">// enqueue A, signal S when done - starts executing immediately</span></span><br><span class="line"><span class="built_in">vkQueueSubmit</span>(work: A, signal: S, wait: None)</span><br><span class="line"><span class="comment">// enqueue B, wait on S to start</span></span><br><span class="line"><span class="built_in">vkQueueSubmit</span>(work: B, signal: None, wait: S)</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;请注意，在这个代码片段中对vkQueueSubmit()的调用都立即返回-等待只发生在GPU上。CPU继续运行，不阻塞。为了让CPU等待，我们需要一个不同的同步原语。<h2 id="栅栏"><a href="#栅栏" class="headerlink" title="栅栏"></a>栅栏</h2>&emsp;&emsp;fence具有类似的目的，因为它用于同步执行，但它用于对CPU(也称为主机)上的执行进行排序。隐含地说，如果主机需要知道GPU什么时候完成了某件事，我们使用栅栏。<br>&emsp;&emsp;与信号量类似，围栏要么处于有信号状态，要么处于无信号状态。当我们提交工作要执行时，我们可以为该工作附加一个围栏。当工作完成时，围栏将发出信号。然后，我们可以让主机等待栅栏发出信号，确保在主机继续之前工作已经完成。<br>&emsp;&emsp;一个具体的例子是截屏。假设我们已经在GPU上完成了必要的工作。现在需要将图像从GPU传输到主机，然后将内存保存到一个文件。我们有命令缓冲区A，它执行传输和隔离F。我们提交带有围栏F的命令缓冲区A，然后立即告诉主机等待F发出信号。这将导致主机阻塞，直到命令缓冲区A完成执行。因此，我们可以安全地让主机将文件保存到磁盘，因为内存传输已经完成。代码格式如下：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">VkCommandBuffer A = ... <span class="comment">// record command buffer with the transfer</span></span><br><span class="line">VkFence F = ... <span class="comment">// create the fence</span></span><br><span class="line"><span class="comment">// enqueue A, start work immediately, signal F when done</span></span><br><span class="line"><span class="built_in">vkQueueSubmit</span>(work: A, fence: F)</span><br><span class="line"><span class="built_in">vkWaitForFence</span>(F) <span class="comment">// blocks execution until A has finished executing</span></span><br><span class="line"><span class="built_in">save_screenshot_to_disk</span>() <span class="comment">// can&#x27;t run until the transfer has</span></span><br><span class="line">finished</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;与信号量的例子不同，这个例子会阻塞主机的执行。这意味着主机不会做任何事情，只是等待执行完成。对于这种情况，我们必须确保在将截图保存到磁盘之前完成传输。<br>&emsp;&emsp;一般来说，除非必要，最好不要阻塞主机。我们希望为GPU和主机提供有用的工作。等待栅栏发出信号并不是什么有用的工作。因此，我们更喜欢用信号量或其他尚未涉及的同步原语来同步我们的工作。必须手动重置围栏，使其恢复到无信号状态。这是因为围栏用于控制主机的执行，因此主机可以决定何时重置围栏。与此相反，信号量用于在不涉及主机的情况下对GPU上的工作进行排序。<br>&emsp;&emsp;总之，信号量用于指定GPU上操作的执行顺序，而围栏用于保持CPU和GPU彼此同步。<h2 id="怎样来选择"><a href="#怎样来选择" class="headerlink" title="怎样来选择"></a>怎样来选择</h2>&emsp;&emsp;我们有两个同步原语可以使用，并且可以方便地在两个地方应用同步:Swapchain操作和等待前一帧完成。我们希望使用信号量进行交换链操作，因为它们发生在GPU上，因此如果可以的话，我们不想让主机等待。对于等待前一帧结束，我们希望使用栅栏，因为我们需要主机等待。这样我们就不会一次画超过一帧。因为我们每一帧都要重新记录命令缓冲区，所以在当前帧执行完成之前，我们不能将下一帧的工作记录到命令缓冲区中，因为我们不想在GPU使用命令缓冲区时覆盖命令缓冲区的当前内容。<h2 id="创建同步的物体"><a href="#创建同步的物体" class="headerlink" title="创建同步的物体"></a>创建同步的物体</h2>&emsp;&emsp;我们需要一个信号量来表示已经从交换链中获取图像并准备好进行渲染，另一个信号量表示渲染已经完成，可以进行表示，还需要一个fence来确保一次只渲染一帧。代码如下：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建三个类成员来存储这些信号量对象和栅栏对象</span></span><br><span class="line">VkSemaphore imageAvailableSemaphore;</span><br><span class="line">VkSemaphore renderFinishedSemaphore;</span><br><span class="line">VkFence inFlightFence;</span><br><span class="line"></span><br><span class="line">VkSemaphoreCreateInfo semaphoreInfo&#123;&#125;;</span><br><span class="line">semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;</span><br><span class="line"><span class="built_in">vkCreateSemaphore</span>(device, &amp;semaphoreInfo, <span class="literal">nullptr</span>, &amp;imageAvailableSemaphore);</span><br><span class="line"><span class="built_in">vkCreateSemaphore</span>(device, &amp;semaphoreInfo, <span class="literal">nullptr</span>, &amp;renderFinishedSemaphore);</span><br><span class="line"><span class="built_in">vkCreateFence</span>(device, &amp;fenceInfo, <span class="literal">nullptr</span>, &amp;inFlightFence);</span><br><span class="line"><span class="comment">//clean up</span></span><br><span class="line"><span class="built_in">vkDestroySemaphore</span>(device, imageAvailableSemaphore, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkDestroySemaphore</span>(device, renderFinishedSemaphore, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkDestroyFence</span>(device, inFlightFence, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="等待前一帧完成"><a href="#等待前一帧完成" class="headerlink" title="等待前一帧完成"></a>等待前一帧完成</h2>&emsp;&emsp;在帧开始时，我们希望等待前一帧结束，以便可以使用命令缓冲区和信号量。为此，我们调用vkWaitForFences<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">drawFrame</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="built_in">vkWaitForFences</span>(device, <span class="number">1</span>, &amp;inFlightFence, VK_TRUE, UINT64_MAX);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;vkWaitForFences函数接受一个栅栏数组，并在主机上等待任何或所有栅栏在返回之前发出信号。我们在这里传递的VK_TRUE表示我们想要等待所有栅栏，但在单个栅栏的情况下，这无关紧要。这个函数还有一个timeout参数，我们将其设置为64位无符号整数的最大值UINT64_MAX，这有效地禁用了超时。等待之后，我们需要用vkResetFences调用手动重置栅栏到无信号状态:<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkResetFences</span>(device, <span class="number">1</span>, &amp;inFlightFence);</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;在我们继续之前，我们的设计中有一个小问题。在第一帧中，我们调用drawFrame()，它立即等待inFlightFence发出信号。inFlightFence只在一帧渲染完成后才会发出信号，但因为这是第一帧，所以没有前面的帧可以给fence发出信号!因此，vkWaitForFences()无限期地阻塞，等待一些永远不会发生的事情。在解决这一困境的许多解决方案中，API中内置了一个聪明的解决方案：在有信号状态下创建栅栏，这样对vkWaitForFences()的第一个调用就会立即返回，因为栅栏已经有信号了。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VkFenceCreateInfo fenceInfo&#123;&#125;;</span><br><span class="line">fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;</span><br><span class="line">fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;</span><br></pre></td></tr></table></figure>
+<h2 id="从交换链中获取图像"><a href="#从交换链中获取图像" class="headerlink" title="从交换链中获取图像"></a>从交换链中获取图像</h2>&emsp;&emsp;在drawFrame函数中我们需要做的下一件事是从交换链中获取图像。回想一下，交换链是一个扩展特性，所以我们必须使用具有vk*KHR命名约定的函数:<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint32_t</span> imageIndex;</span><br><span class="line"><span class="built_in">vkAcquireNextImageKHR</span>(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &amp;imageIndex);</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;vkAcquireNextImageKHR的前两个参数是我们希望从中获取映像的逻辑设备和交换链。第三个参数指定图像可用的超时时间(以纳秒为单位)使用64位无符号整数的最大值意味着我们有效地禁用了超时。接下来的两个参数指定在表示引擎完成使用映像时发出信号的同步对象。这是我们可以开始画的时间点。可以指定信号量、围栏或两者都指定。我们将使用imageAvailableSemaphore来实现这个目的。最后一个参数指定一个变量，用于输出可用的交换链映像的索引。索引引用swapChainImages数组中的VkImage。我们要用这个下标来选择VkFrameBuffer。<h2 id="记录命令缓冲"><a href="#记录命令缓冲" class="headerlink" title="记录命令缓冲"></a>记录命令缓冲</h2>&emsp;&emsp;使用imageIndex指定要使用的交换链映像，我们现在可以记录命令缓冲区。首先，我们在命令缓冲区上调用vkResetCommandBuffer，以确保它能够被记录。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkResetCommandBuffer</span>(commandBuffer, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;vkResetCommandBuffer的第二个参数是VkCommandBufferResetFlagBits标志。因为我们不想做任何特别的事情，所以我们把它保留为0。现在调用函数recordCommandBuffer来记录我们想要的命令。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">recordCommandBuffer</span>(commandBuffer, imageIndex);</span><br></pre></td></tr></table></figure>
+有了完整记录的命令缓冲区，我们现在可以提交它。<h2 id="提交命令缓冲"><a href="#提交命令缓冲" class="headerlink" title="提交命令缓冲"></a>提交命令缓冲</h2>&emsp;&emsp;队列的提交以及同步通过VkSubmitInfo结构中的参数配置。<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">VkSubmitInfo submitInfo&#123;&#125;;</span><br><span class="line">submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;</span><br><span class="line">VkSemaphore waitSemaphores[] = &#123;imageAvailableSemaphore&#125;;</span><br><span class="line">VkPipelineStageFlags waitStages[] =</span><br><span class="line">&#123;VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT&#125;;</span><br><span class="line">submitInfo.waitSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">submitInfo.pWaitSemaphores = waitSemaphores;</span><br><span class="line">submitInfo.pWaitDstStageMask = waitStages;</span><br><span class="line"><span class="comment">//指定实际提交执行的命令缓冲区。我们只需提交我们拥有的单个命令缓冲区。</span></span><br><span class="line">submitInfo.commandBufferCount = <span class="number">1</span>;</span><br><span class="line">submitInfo.pCommandBuffers = commandBuffer;</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;前三个参数指定在执行开始前等待哪个信号量，以及在管道的哪个阶段等待。我们希望等待将颜色写入图像，直到图像可用为止，因此我们指定了写入颜色附件的图形管道的阶段。这意味着理论上实现已经可以开始执行我们的顶点着色器，而图像还没有可用。waitStages数组中的每个条目都对应于pWaitSemaphores中具有相同索引的信号量。</li>
 </ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VkSemaphore signalSemaphores[] = &#123;renderFinishedSemaphore&#125;;</span><br><span class="line">submitInfo.signalSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">submitInfo.pSignalSemaphores = signalSemaphores;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;signalsemaphores和pSignalSemaphores参数指定在命令缓冲区完成执行后发出哪些信号。在我们的例子中，我们使用renderFinishedSemaphore来实现这个目的。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkQueueSubmit</span>(graphicsQueue, <span class="number">1</span>， &amp;submitInfo, inFlightFence)</span><br></pre></td></tr></table></figure><br>&emsp;&emsp;现在我们可以使用vkQueueSubmit将命令缓冲区提交到图形队列。当工作负载非常大时，该函数以VkSubmitInfo结构数组作为效率参数。最后一个参数引用了一个可选的栅栏，当命令缓冲区完成执行时将发出信号。这让我们知道什么时候重用命令缓冲区是安全的，因此我们想给它一个inFlightFence。现在在下一帧，CPU将等待这个命令缓冲区完成执行，然后再将新命令记录进去。</p>
+<h2 id="Subpass依赖性"><a href="#Subpass依赖性" class="headerlink" title="Subpass依赖性"></a>Subpass依赖性</h2><p>&emsp;&emsp;请记住，渲染通道中的子通道会自动处理图像布局过渡。这些转换由子传递依赖项控制，子传递依赖项指定子传递之间的内存和执行依赖项。我们现在只有一个子通道，但是在这个子通道之前和之后的操作也算隐含的“子通道”。有两个内置依赖项负责呈现通道开始和结束时的转换，但前者没有在正确的时间发生。它假设转换发生在管道的开始，但是我们还没有获得在那一点的图像!有两种方法来处理这个问题。我们可以改变imageAvailableSemaphore的waitStages为<br>VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT来确保渲染通道在图像可用之前不会开始，或者我们可以让渲染通道等待<br>VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT阶段。我决定在这里使用第二个选项，因为这是一个了解子通道依赖关系及其工作方式的好借口。子通道依赖关系在VkSubpassDependency结构体中指定。转到createRenderPass函数并添加一个:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VkSubpassDependency dependency&#123;&#125;;</span><br><span class="line">dependency.srcSubpass = VK_SUBPASS_EXTERNAL;</span><br><span class="line">dependency.dstSubpass = <span class="number">0</span>;</span><br></pre></td></tr></table></figure><br>&emsp;&emsp;前两个字段指定依赖项和依赖子通道的索引。特殊值VK_SUBPASS_EXTERNAL指的是呈现传递之前还是之后的隐式子传递，这取决于它是在srcSubpass还是dstSubpass中指定的。索引0指的是我们的子通道，它是第一个也是唯一一个。dstSubpass必须总是高于srcSubpass，以防止依赖关系图中的循环（除非其中一个子通道是VK_SUBPASS_EXTERNAL）。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;</span><br><span class="line">dependency.srcAccessMask = <span class="number">0</span>;</span><br></pre></td></tr></table></figure><br>&emsp;&emsp;接下来的两个字段指定要等待的操作以及这些操作发生的阶段。我们需要等待交换链完成从映像的读取，然后才能访问它。这可以通过等待颜色附件输出阶段本身来完成。<br>&emsp;&emsp;应该等待此操作的操作位于颜色附加阶段，并涉及到颜色附加的写入。这些设置将阻止转换发生，直到它实际上是必要的(和允许的):当我们想要开始写入颜色时。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">renderPassInfo.dependencyCount = <span class="number">1</span>;</span><br><span class="line">renderPassInfo.pDependencies = &amp;dependency;</span><br></pre></td></tr></table></figure><br>VkRenderPassCreateInfo结构体有两个字段来指定依赖项数组。</p>
+<h2 id="呈现"><a href="#呈现" class="headerlink" title="呈现"></a>呈现</h2><p>&emsp;&emsp;绘制帧的最后一步是将结果提交回交换链，使其最终显示在屏幕上。表示是通过drawFrame函数末尾的VkPresentInfoKHR结构配置的。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VkPresentInfoKHR presentInfo&#123;&#125;;</span><br><span class="line">presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;</span><br><span class="line">presentInfo.waitSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">presentInfo.pWaitSemaphores = signalSemaphores;</span><br></pre></td></tr></table></figure><br>&emsp;&emsp;前两个参数指定在表示发生之前等待哪个信号量，就像VkSubmitInfo一样。因为我们想要等待命令缓冲区完成执行，这样我们的三角形就被绘制出来了，所以我们取将要发出信号的信号量并等待它们，因此我们使用signalSemaphores。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VkSwapchainKHR swapChains[] = &#123;swapChain&#125;;</span><br><span class="line">presentInfo.swapchainCount = <span class="number">1</span>;</span><br><span class="line">presentInfo.pSwapchains = swapChains;</span><br><span class="line">presentInfo.pImageIndices = &amp;imageIndex;</span><br></pre></td></tr></table></figure><br>接下来的两个参数指定要向其显示图像的交换链和每个交换链的图像索引。这几乎总是一个。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkQueuePresentKHR</span>(presentQueue, &amp;presentInfo);</span><br></pre></td></tr></table></figure><br>vkQueuePresentKHR函数提交向交换链提供图像的请求。</p>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
       
     </div>
 
@@ -896,100 +995,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/10/18/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B07-Swapchain/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Yeha">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yeha的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/10/18/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B07-Swapchain/" class="post-title-link" itemprop="url">Vulkan笔记-交换链</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-10-18 21:33:25" itemprop="dateCreated datePublished" datetime="2022-10-18T21:33:25+08:00">2022-10-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-10-23 17:07:24" itemprop="dateModified" datetime="2022-10-23T17:07:24+08:00">2022-10-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>&emsp;&emsp; 这是Vulkan学习的第七节，主要讲解交换链相关操作。</p>
-<h2 id="什么是交换链"><a href="#什么是交换链" class="headerlink" title="什么是交换链"></a>什么是交换链</h2><p>&emsp;&emsp; Vulkan没有默认帧缓存的概念，因此我们需要一个拥有缓存的机构，我们在其拥有的缓存中渲染。这个机构我们称作交换链。交换链实际上就是等待呈现到屏幕上的一队列的图片。我们应用程序需要获取这些图片，并进行绘制，然后将其返回到队列中。</p>
-<h2 id="检查交换链是否支持"><a href="#检查交换链是否支持" class="headerlink" title="检查交换链是否支持"></a>检查交换链是否支持</h2><p>&emsp;&emsp; 不是所有的显卡都支持将要显示的图片呈现到屏幕上面。这主要有两个方面的原因：</p>
-<ul>
-<li>有些电脑不需要显示，例如服务器，没有任何显示输出。</li>
-<li>图片的现实和具体的窗口绑定很深，而VulKan是和窗口无关的接口。<h3 id="检查是否支持交换链的代码"><a href="#检查是否支持交换链的代码" class="headerlink" title="检查是否支持交换链的代码"></a>检查是否支持交换链的代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//交换链扩展名称（用宏进行的命令）</span></span><br><span class="line"><span class="keyword">const</span> std::vector&lt;<span class="keyword">const</span> <span class="keyword">char</span>*&gt; deviceExtensions = &#123;</span><br><span class="line">VK_KHR_SWAPCHAIN_EXTENSION_NAME</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//检查物理设备是否支持的代码</span></span><br><span class="line"><span class="keyword">bool</span> <span class="built_in">checkDeviceExtensionSupport</span>(VkPhysicalDevice device) &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取需要写扩展内容的大小</span></span><br><span class="line"><span class="keyword">uint32_t</span> extensionCount;</span><br><span class="line"><span class="built_in">vkEnumerateDeviceExtensionProperties</span>(device, <span class="literal">nullptr</span>,</span><br><span class="line">&amp;extensionCount, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取扩展的名称</span></span><br><span class="line"><span class="function">std::vector&lt;VkExtensionProperties&gt;</span></span><br><span class="line"><span class="function"><span class="title">availableExtensions</span><span class="params">(extensionCount)</span></span>;</span><br><span class="line"><span class="built_in">vkEnumerateDeviceExtensionProperties</span>(device, <span class="literal">nullptr</span>,</span><br><span class="line">&amp;extensionCount, availableExtensions.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据requiredExtensions遍历availableExtensions如果requiredExtensions里面的availableExtensions都有则支持</span></span><br><span class="line"><span class="function">std::set&lt;std::string&gt; <span class="title">requiredExtensions</span><span class="params">(deviceExtensions.begin(), deviceExtensions.end())</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; extension : availableExtensions) &#123;</span><br><span class="line">requiredExtensions.<span class="built_in">erase</span>(extension.extensionName);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> requiredExtensions.<span class="built_in">empty</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在创建逻辑设备时我们需要添加如下两句</span></span><br><span class="line">createInfo.enabledExtensionCount = <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(deviceExtensions.<span class="built_in">size</span>());</span><br><span class="line">createInfo.ppEnabledExtensionNames = deviceExtensions.<span class="built_in">data</span>();</span><br></pre></td></tr></table></figure>
-<h2 id="检查交换链的相关细节"><a href="#检查交换链的相关细节" class="headerlink" title="检查交换链的相关细节"></a>检查交换链的相关细节</h2>&emsp;&emsp;最基础的三个属性我们要检查。</li>
-<li>基本的窗口容量，也就是在交换链中图片的最大以及最小数量，以及图片的最大和最小长和宽。</li>
-<li>窗口格式，即像素格式以及颜色空间。</li>
-<li>可用的展示模式。<h3 id="检查交换链细节的相关代码"><a href="#检查交换链细节的相关代码" class="headerlink" title="检查交换链细节的相关代码"></a>检查交换链细节的相关代码</h3><h4 id="表面格式"><a href="#表面格式" class="headerlink" title="表面格式"></a>表面格式</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//输出基础属性的数据结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SwapChainSupportDetails</span> &#123;</span></span><br><span class="line">VkSurfaceCapabilitiesKHR capabilities;</span><br><span class="line">std::vector&lt;VkSurfaceFormatKHR&gt; formats;</span><br><span class="line">std::vector&lt;VkPresentModeKHR&gt; presentModes;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//获取VkSurfaceCapabilitiesKHR相关属性：包括最大最小图像数量等</span></span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfaceCapabilitiesKHR</span>(device, surface, &amp;detailscapabilities);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取颜色通道（RGBA等）以及颜色空间（sRGB是否支持）</span></span><br><span class="line"><span class="keyword">uint32_t</span> formatCount;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfaceFormatsKHR</span>(device, surface, &amp;formatCount, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="keyword">if</span> (formatCount != <span class="number">0</span>) &#123;</span><br><span class="line">    details.formats.<span class="built_in">resize</span>(formatCount);</span><br><span class="line">    <span class="built_in">vkGetPhysicalDeviceSurfaceFormatsKHR</span>(device, surface, &amp;formatCount, details.formats.<span class="built_in">data</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//选择合适的窗口格式</span></span><br><span class="line"><span class="function">VkSurfaceFormatKHR <span class="title">chooseSwapSurfaceFormat</span><span class="params">(<span class="keyword">const</span> std::vector&lt;VkSurfaceFormatKHR&gt;&amp; availableFormats)</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; availableFormat : availableFormats) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &amp;&amp;</span><br><span class="line">            availableFormat.colorSpace ==</span><br><span class="line">        VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) &#123;</span><br><span class="line">            <span class="keyword">return</span> availableFormat;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> availableFormats[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="展示模式"><a href="#展示模式" class="headerlink" title="展示模式"></a>展示模式</h4>&emsp;&emsp; 展示模式是交换链非常重要的一个设置，因为其展示了实际的展示图片的条件。这里有四种可能的模式如下：</li>
-<li>VK_PRESENT_MODE_IMMEDIATE_KHR：你的程序提交的图像会立即传输到屏幕，这可能会导致撕裂。</li>
-<li>VK_PRESENT_MODE_FIFO_KHR：交换链是个队列，显示的时候从队列头拿一个图像，程序插入渲染的图像到队列尾。如果队列满了程序就要等待，这差不多像是垂直同步，显示刷新的时刻就是垂直空白。</li>
-<li>VK_PRESENT_MODE_FIFO_RELAXED_KHR：在最后一个垂直空白的时候，如果应用迟到，且队列为空，该模式才会和前面的那个有所不同。这样就不等到下一个垂直空白，图像会直接传输到屏幕，可能导致撕裂。</li>
-<li>VK_PRESENT_MODE_MAILBOX_KHR：这是第二个模式的又一个变种，当队列满的时候，它不会阻塞应用，已经在队列中的图像会被新的替换。这个模式可以实现三重缓冲，避免撕裂，比使用双重缓冲的垂直同步减少很多延迟。<h4 id="相关代码"><a href="#相关代码" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//展示模式：获取展示模式的类型</span></span><br><span class="line"><span class="keyword">uint32_t</span> presentModeCount;</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfacePresentModesKHR</span>(device, surface, &amp;presentModeCount, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="keyword">if</span> (presentModeCount != <span class="number">0</span>) &#123;</span><br><span class="line">details.presentModes.<span class="built_in">resize</span>(presentModeCount);</span><br><span class="line"><span class="built_in">vkGetPhysicalDeviceSurfacePresentModesKHR</span>(device, surface,</span><br><span class="line">&amp;presentModeCount, details.presentModes.<span class="built_in">data</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">//选择合适的展示模式</span></span><br><span class="line"><span class="function">VkPresentModeKHR <span class="title">chooseSwapPresentMode</span><span class="params">(<span class="keyword">const</span> std::vector&lt;VkPresentModeKHR&gt;&amp; availablePresentModes)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; availablePresentMode : availablePresentModes) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) </span><br><span class="line">            &#123;</span><br><span class="line">            <span class="keyword">return</span> availablePresentMode;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">return</span> VK_PRESENT_MODE_FIFO_KHR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="交换扩展"><a href="#交换扩展" class="headerlink" title="交换扩展"></a>交换扩展</h4>&emsp;&emsp; 交换扩展是交换链中图片的分辨率。一般情况下都精确等于窗口的像素格式的分辨率。交换链中图片的分辨率的范围在VkSurfaceCapabilitiesKHR结构中进行的定义。一般情况下VulKan会通过设置currentExtent中的width以及height值来告诉我们匹配窗口的分辨率的值是多少。不过一些窗口管理器却不设置上面的值，而是给currentExtent中的width以及height设置uint32_t类型的最大值（比如使用高清分辨显示器，桌面坐标和像素并非对应，像素的密度大）。在这种情况下我们需要自己来选择合理的分辨率，合理的分辨率一般在minImageExtent和maxImageExtent之间。<h4 id="相关代码-1"><a href="#相关代码-1" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VkExtent2D <span class="title">chooseSwapExtent</span><span class="params">(<span class="keyword">const</span> VkSurfaceCapabilitiesKHR&amp; capabilities)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//不等于uint32_t最大值时的分辨率匹配</span></span><br><span class="line">    <span class="keyword">if</span> (capabilities.currentExtent.width != std::numeric_limits&lt;<span class="keyword">uint32_t</span>&gt;::<span class="built_in">max</span>()) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> capabilities.currentExtent;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">int</span> width, height;</span><br><span class="line">    <span class="comment">//由于在高清</span></span><br><span class="line">    <span class="built_in">glfwGetFramebufferSize</span>(window, &amp;width, &amp;height);</span><br><span class="line">    VkExtent2D actualExtent = </span><br><span class="line">        &#123;</span><br><span class="line">        <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(width),</span><br><span class="line">        <span class="keyword">static_cast</span>&lt;<span class="keyword">uint32_t</span>&gt;(height)</span><br><span class="line">        &#125;;</span><br><span class="line">    actualExtent.width = std::<span class="built_in">clamp</span>(actualExtent.width,</span><br><span class="line">    capabilities.minImageExtent.width,</span><br><span class="line">    capabilities.maxImageExtent.width);</span><br><span class="line">    actualExtent.height = std::<span class="built_in">clamp</span>(actualExtent.height,</span><br><span class="line">    capabilities.minImageExtent.height,</span><br><span class="line">    capabilities.maxImageExtent.height);</span><br><span class="line">    <span class="keyword">return</span> actualExtent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建交换链"><a href="#创建交换链" class="headerlink" title="创建交换链"></a>创建交换链</h3><h4 id="相关代码-2"><a href="#相关代码-2" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//收集交换链中的相关细节的信息</span></span><br><span class="line">SwapChainSupportDetails swapChainSupport = <span class="built_in">querySwapChainSupport</span>(physicalDevice);</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据细节获取合适的配置</span></span><br><span class="line">VkSurfaceFormatKHR surfaceFormat = <span class="built_in">chooseSwapSurfaceFormat</span>(swapChainSupport.formats);</span><br><span class="line">VkPresentModeKHR presentMode = <span class="built_in">chooseSwapPresentMode</span>(swapChainSupport.presentModes);</span><br><span class="line">VkExtent2D extent = <span class="built_in">chooseSwapExtent</span>(swapChainSupport.capabilities);</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置交换链中的图片数量</span></span><br><span class="line"><span class="keyword">uint32_t</span> imageCount = swapChainSupport.capabilities.minImageCount + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (swapChainSupport.capabilities.maxImageCount &gt; <span class="number">0</span> &amp;&amp; imageCount &gt; swapChainSupport.capabilities.maxImageCount) &#123;</span><br><span class="line">    imageCount = swapChainSupport.capabilities.maxImageCount;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建交换链</span></span><br><span class="line">VkSwapchainCreateInfoKHR createInfo&#123;&#125;;</span><br><span class="line">createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;</span><br><span class="line">createInfo.surface = surface;</span><br><span class="line">createInfo.minImageCount = imageCount;</span><br><span class="line">createInfo.imageFormat = surfaceFormat.format;</span><br><span class="line">createInfo.imageColorSpace = surfaceFormat.colorSpace;</span><br><span class="line">createInfo.imageExtent = extent;</span><br><span class="line">createInfo.imageArrayLayers = <span class="number">1</span>;</span><br><span class="line">createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取显示和渲染的队列</span></span><br><span class="line">QueueFamilyIndices indices = <span class="built_in">findQueueFamilies</span>(physicalDevice);</span><br><span class="line"><span class="keyword">uint32_t</span> queueFamilyIndices[] = &#123;indices.graphicsFamily.<span class="built_in">value</span>(),indices.presentFamily.<span class="built_in">value</span>()&#125;;</span><br><span class="line"><span class="comment">//如果显示和渲染队列不是一个队列，这样涉及到图片交换的需要设置拥有权</span></span><br><span class="line"><span class="keyword">if</span> (indices.graphicsFamily != indices.presentFamily)</span><br><span class="line">&#123;</span><br><span class="line">    createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;</span><br><span class="line">    createInfo.queueFamilyIndexCount = <span class="number">2</span>;</span><br><span class="line">    createInfo.pQueueFamilyIndices = queueFamilyIndices;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">else</span> </span><br><span class="line">&#123;</span><br><span class="line">    createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;</span><br><span class="line">    createInfo.queueFamilyIndexCount = <span class="number">0</span>; </span><br><span class="line">    createInfo.pQueueFamilyIndices = <span class="literal">nullptr</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//图片是否需要旋转，currentTransform表示不需要</span></span><br><span class="line">createInfo.preTransform = swapChainSupport.capabilities.currentTransform;</span><br><span class="line"></span><br><span class="line"><span class="comment">//渲染是否和其他窗口融合</span></span><br><span class="line">createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;</span><br><span class="line"></span><br><span class="line">createInfo.presentMode = presentMode;</span><br><span class="line"></span><br><span class="line"><span class="comment">//被其他窗口遮挡的像素是否需要</span></span><br><span class="line">createInfo.clipped = VK_TRUE;</span><br><span class="line"></span><br><span class="line">createInfo.oldSwapchain = VK_NULL_HANDLE;</span><br><span class="line"><span class="comment">//创建交换链</span></span><br><span class="line">VkSwapchainKHR swapChain;</span><br><span class="line"><span class="built_in">vkCreateSwapchainKHR</span>(device, &amp;createInfo, <span class="literal">nullptr</span>, &amp;swapChain);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除交换链</span></span><br><span class="line"><span class="built_in">vkDestroySwapchainKHR</span>(device, swapChain, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4>&emsp;&emsp; 下面是关于一些参数值的说明：</li>
-<li>VK_SHARING_MODE_EXCLUSIVE：一个图片属于一个队列族，在另一个队列族中使用它之前，必须显式地转移其所有权。该选项提供了最佳性能。</li>
-<li>VK_SHARING_MODE_CONCURRENT:图片可以跨多个队列族使用，无需显式的所有权转移。<h3 id="检索交换链图片"><a href="#检索交换链图片" class="headerlink" title="检索交换链图片"></a>检索交换链图片</h3>&emsp;&emsp; 交换链中的图片是我们实际渲染到的位置。<h4 id="相关代码-3"><a href="#相关代码-3" class="headerlink" title="相关代码"></a>相关代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取交换链图片</span></span><br><span class="line">std::vector&lt;VkImage&gt; swapChainImages;</span><br><span class="line"><span class="built_in">vkGetSwapchainImagesKHR</span>(device, swapChain, &amp;imageCount, <span class="literal">nullptr</span>);</span><br><span class="line">swapChainImages.<span class="built_in">resize</span>(imageCount);</span><br><span class="line"><span class="built_in">vkGetSwapchainImagesKHR</span>(device, swapChain, &amp;imageCount, swapChainImages.<span class="built_in">data</span>());</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1059,20 +1064,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

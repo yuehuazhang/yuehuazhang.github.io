@@ -160,6 +160,106 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/06/14/RTR4-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/14/RTR4-1/" class="post-title-link" itemprop="url">实时渲染笔记1-矩阵</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-14 22:21:17" itemprop="dateCreated datePublished" datetime="2022-06-14T22:21:17+08:00">2022-06-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-09-18 20:02:44" itemprop="dateModified" datetime="2022-09-18T20:02:44+08:00">2022-09-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RTR4/" itemprop="url" rel="index"><span itemprop="name">RTR4</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="矩阵学习"><a href="#矩阵学习" class="headerlink" title="矩阵学习"></a>矩阵学习</h1><h2 id="旋转矩阵"><a href="#旋转矩阵" class="headerlink" title="旋转矩阵"></a>旋转矩阵</h2><p>绕x轴旋转（沿着x轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{x}(\phi)=
+\begin{pmatrix}
+ 1&0&0&0
+\\0&cos\phi&-sin\phi&0
+ \\0& sin\phi&cos\phi&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>绕y轴旋转（沿着y轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{y}(\phi)=
+\begin{pmatrix}
+ cos\phi&0&sin\phi&0
+\\0&1&0&0
+ \\-sin\phi&0&cos\phi&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>绕z轴旋转（沿着z轴负方向观察，逆时针旋转）的矩阵是</p>
+<script type="math/tex; mode=display">
+R_{z}(\phi)=
+\begin{pmatrix}
+ cos\phi&-sin\phi&0&0
+\\sin\phi&cos\phi&0&0
+ \\0&0&1&0
+ \\0&0&0&1
+\end{pmatrix}</script><p>我们可以将其转换为一个3X3的旋转矩阵（删除最后一行和最后一列）。<br>对于每一个3X3的旋转矩阵，其迹（主对角线之和）为一个定值即：</p>
+<script type="math/tex; mode=display">
+tr(R)=1+2cos\phi</script><p>所有旋转矩阵的行列式都是1并且是正交的。</p>
+<h2 id="缩放矩阵"><a href="#缩放矩阵" class="headerlink" title="缩放矩阵"></a>缩放矩阵</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2022/03/15/%E6%B5%85%E8%B0%88FreeCAD%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -855,20 +955,20 @@ R=
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
