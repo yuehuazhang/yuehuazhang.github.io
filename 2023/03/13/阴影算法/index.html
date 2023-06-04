@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。 平面阴影投影阴影">
+  <meta name="description" content="&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。 平面阴影投影阴影&amp;emsp;&amp;emsp; 投影阴影需要一个矩阵，将物体上的点通过这个矩阵投影到平面上。我们设要投影到的平面是$\pi: n\cdot x + d &#x3D; 0$,光线的方向是$l&#x3D;(l_{x},l_{y},l_{y})$那么我们可以得到这个矩阵是$$M&#x3D;\left(\beg">
 <meta property="og:type" content="article">
 <meta property="og:title" content="阴影算法">
 <meta property="og:url" content="https://yuehuazhang.github.io/2023/03/13/%E9%98%B4%E5%BD%B1%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="Yeha的博客">
-<meta property="og:description" content="&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。 平面阴影投影阴影">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。 平面阴影投影阴影&amp;emsp;&amp;emsp; 投影阴影需要一个矩阵，将物体上的点通过这个矩阵投影到平面上。我们设要投影到的平面是$\pi: n\cdot x + d &#x3D; 0$,光线的方向是$l&#x3D;(l_{x},l_{y},l_{y})$那么我们可以得到这个矩阵是$$M&#x3D;\left(\beg">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-13T14:07:50.723Z">
-<meta property="article:modified_time" content="2023-03-13T14:11:15.674Z">
+<meta property="article:modified_time" content="2023-03-28T12:32:41.971Z">
 <meta property="article:author" content="Yeha">
 <meta property="article:tag" content="渲染">
 <meta name="twitter:card" content="summary">
@@ -188,10 +188,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-03-13 22:07:50 / 修改时间：22:11:15" itemprop="dateCreated datePublished" datetime="2023-03-13T22:07:50+08:00">2023-03-13</time>
+              <time title="创建时间：2023-03-13 22:07:50" itemprop="dateCreated datePublished" datetime="2023-03-13T22:07:50+08:00">2023-03-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-28 20:32:41" itemprop="dateModified" datetime="2023-03-28T20:32:41+08:00">2023-03-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -213,8 +219,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>&emsp;&emsp; 本节主要讲解一些阴影算法。</p>
-<h2 id="平面阴影"><a href="#平面阴影" class="headerlink" title="平面阴影"></a>平面阴影</h2><h3 id="投影阴影"><a href="#投影阴影" class="headerlink" title="投影阴影"></a>投影阴影</h3><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+        <p>&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。</p>
+<h2 id="平面阴影"><a href="#平面阴影" class="headerlink" title="平面阴影"></a>平面阴影</h2><h3 id="投影阴影"><a href="#投影阴影" class="headerlink" title="投影阴影"></a>投影阴影</h3><p>&amp;emsp;&amp;emsp; 投影阴影需要一个矩阵，将物体上的点通过这个矩阵投影到平面上。<br>我们设要投影到的平面是$\pi: n\cdot x + d &#x3D; 0$,光线的方向是$l&#x3D;(l_{x},l_{y},l_{y})$那么我们可以得到这个矩阵是<br>$$<br>M&#x3D;<br>\left(<br>\begin{matrix}<br>\pmb{n}\cdot \pmb{l} - l_{x}n_{x} &amp; -l_{x}n_{y} &amp; -l_{x}n_{z} &amp; -l_{x}d \<br>-l_{y}n_{x} &amp;  \pmb{n}\cdot \pmb{l}+d-l_{y}n_{y} &amp; -l_{y}n_{z} &amp; -l_{y}d \<br>-l_{z}n_{x} &amp; -l_{z}n_{y}  &amp; \pmb{n}\cdot \pmb{l}+d-l_{z}n_{z} &amp; -l_{z}d  \<br>-n_{x} &amp; -n_{y}  &amp; -n_{z} &amp; \pmb{n}\cdot \pmb{l}<br>\end{matrix}<br>\right)<br>$$<br>&amp;emsp;&amp;emsp; 绘制平面阴影的方法：首先绘制平面，然后在关闭深度测试的情况下绘制投影，最后正常的绘制其他的物体。如果平面不是无限大的，那么有可能阴影会落到平面外，我们可以在绘制平面的时候开启模板缓冲，在绘制投影的时候，只有前面绘制了模板的地方才会绘制投影，最后正常的绘制其他的物体。</p>
+<h3 id="软阴影"><a href="#软阴影" class="headerlink" title="软阴影"></a>软阴影</h3><p>&amp;emsp;&amp;emsp; 软阴影产生的原因：光源本身不是一个点，他是有面积的，所以光源照射到物体上时，会产生半影和本影。理论上来说，我们将光源分解为足够多的点光源，产生阴影，将所有阴影做一个平均值，就可以得到本影和半影，不过这样效率很慢，效果不理想，不适合在工程中进行应用。</p>
+<h4 id="Heckbert-and-Herf算法"><a href="#Heckbert-and-Herf算法" class="headerlink" title="Heckbert and Herf算法"></a>Heckbert and Herf算法</h4><h2 id="PCF"><a href="#PCF" class="headerlink" title="PCF"></a>PCF</h2><h2 id="PCSS"><a href="#PCSS" class="headerlink" title="PCSS"></a>PCSS</h2><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
     </div>
 
     
@@ -235,7 +243,10 @@
     <a href="/2023/02/27/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" rel="prev" title="渲染方程的学习">
       <i class="fa fa-chevron-left"></i> 渲染方程的学习
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2023/05/13/%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5/" rel="next" title="现代图形学中的几个重要概念">
+      现代图形学中的几个重要概念 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -294,7 +305,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E9%98%B4%E5%BD%B1"><span class="nav-number">1.</span> <span class="nav-text">平面阴影</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E5%BD%B1%E9%98%B4%E5%BD%B1"><span class="nav-number">1.1.</span> <span class="nav-text">投影阴影</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E9%98%B4%E5%BD%B1"><span class="nav-number">1.</span> <span class="nav-text">平面阴影</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E5%BD%B1%E9%98%B4%E5%BD%B1"><span class="nav-number">1.1.</span> <span class="nav-text">投影阴影</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E9%98%B4%E5%BD%B1"><span class="nav-number">1.2.</span> <span class="nav-text">软阴影</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Heckbert-and-Herf%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">Heckbert and Herf算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PCF"><span class="nav-number">2.</span> <span class="nav-text">PCF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PCSS"><span class="nav-number">3.</span> <span class="nav-text">PCSS</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -308,20 +319,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
