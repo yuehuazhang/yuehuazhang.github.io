@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="&amp;emsp;&amp;emsp; 这是Vulkan学习的第十四节，主要讲解渲染和呈现。 一帧的概述&amp;emsp;&amp;emsp; 在较高的层次上，在Vulkan中渲染一个框架由一组常见的步骤组成：  等待前一帧结束。 从交换链中获取一个映像。 记录一个将场景绘制到图像上的命令缓冲区。 提交记录的命令缓冲区。 显示交换链映像。这个是我们渲染循环的核心。  同步&amp;emsp;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vulkan笔记-渲染和呈现">
+<meta property="og:url" content="https://yuehuazhang.github.io/2023/02/08/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B014-%E6%B8%B2%E6%9F%93%E5%92%8C%E5%91%88%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Yeha的博客">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 这是Vulkan学习的第十四节，主要讲解渲染和呈现。 一帧的概述&amp;emsp;&amp;emsp; 在较高的层次上，在Vulkan中渲染一个框架由一组常见的步骤组成：  等待前一帧结束。 从交换链中获取一个映像。 记录一个将场景绘制到图像上的命令缓冲区。 提交记录的命令缓冲区。 显示交换链映像。这个是我们渲染循环的核心。  同步&amp;emsp;&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-08T13:23:29.208Z">
+<meta property="article:modified_time" content="2023-02-14T14:08:47.366Z">
+<meta property="article:author" content="Yeha">
+<meta property="article:tag" content="Vulkan学习">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yuehuazhang.github.io/2023/02/08/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B014-%E6%B8%B2%E6%9F%93%E5%92%8C%E5%91%88%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Vulkan笔记-渲染和呈现 | Yeha的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yeha的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休说鲈鱼堪脍，尽西风，季鹰归未？</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2023/02/08/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B014-%E6%B8%B2%E6%9F%93%E5%92%8C%E5%91%88%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vulkan笔记-渲染和呈现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-08 21:23:29" itemprop="dateCreated datePublished" datetime="2023-02-08T21:23:29+08:00">2023-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-14 22:08:47" itemprop="dateModified" datetime="2023-02-14T22:08:47+08:00">2023-02-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vulkan/" itemprop="url" rel="index"><span itemprop="name">Vulkan</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&amp;emsp;&amp;emsp; 这是Vulkan学习的第十四节，主要讲解渲染和呈现。</p>
+<h2 id="一帧的概述"><a href="#一帧的概述" class="headerlink" title="一帧的概述"></a>一帧的概述</h2><p>&amp;emsp;&amp;emsp; 在较高的层次上，在Vulkan中渲染一个框架由一组常见的步骤组成：</p>
+<ul>
+<li>等待前一帧结束。</li>
+<li>从交换链中获取一个映像。</li>
+<li>记录一个将场景绘制到图像上的命令缓冲区。</li>
+<li>提交记录的命令缓冲区。</li>
+<li>显示交换链映像。<br>这个是我们渲染循环的核心。</li>
+</ul>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>&amp;emsp;&amp;emsp;Vulkan的核心设计理念是同步执行GPU是显式的。操作的顺序由我们使用各种同步原语来定义，这些原语告诉驱动程序我们想要运行的顺序。这意味着许多开始在GPU上执行工作的Vulkan API调用是异步的，函数将在操作完成之前返回。在本章中，我们需要明确地对一些事件进行排序，因为它们发生在GPU上，例如:</p>
+<ul>
+<li>从交换链中获取一个图片。</li>
+<li>执行在获取的图像上绘制的命令。</li>
+<li>将该图像呈现到屏幕上进行显示，并将其返回到交换链。<br>&amp;emsp;&amp;emsp;这些事件中的每一个都是使用单个函数调用进行设置的，但都是异步执行的。函数调用将在操作实际完成之前返回，并且执行顺序也未定义。这是不幸的，因为每一个操作都依赖于前一个操作的完成。因此，我们需要探索可以使用哪些原语来实现所需的排序。</li>
+</ul>
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>&amp;emsp;&amp;emsp;信号量用于在队列操作之间添加顺序。队列操作指的是我们提交给队列的工作，可以是在命令缓冲区中，也可以是在函数中，稍后我们将看到。队列的例子有图形队列和表示队列。信号量既用于在同一队列内排序，也用于在不同队列之间排序。队列的例子有图形队列和表示队列。信号量既用于在同一队列内排序，也用于在不同队列之间排序。在Vulkan中有两种信号量，二进制和时间轴。因为本教程只使用二进制信号量，所以我们将不讨论时间轴信号量。进一步提到的信号量这个术语专门指二进制信号量。<br>&amp;emsp;&amp;emsp;信号量要么是无信号的，要么是有信号的。它一开始是没有信号的。我们使用信号量来排序队列操作的方法是在一个队列操作中提供相同的信号量作为“信号”信号量，在另一个队列操作中提供相同的信号量作为“等待”信号量。例如，我们有一个信号量S和队列操作A和B，我们想要按顺序执行。我们告诉Vulkan的是，操作A在完成执行时将给信号量S“发信号”，而操作B将等信号量S在开始执行之前。当操作A结束时，信号量S将被发出信号。而操作B直到S收到信号才会开始。操作B开始执行后，信号量S将自动重置为无信号状态，允许再次使用。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VkCommandBuffer A, B = ... <span class="comment">// record command buffers</span></span><br><span class="line">VkSemaphore S = ... <span class="comment">// create a semaphore</span></span><br><span class="line"><span class="comment">// enqueue A, signal S when done - starts executing immediately</span></span><br><span class="line"><span class="built_in">vkQueueSubmit</span>(work: A, signal: S, wait: None)</span><br><span class="line"><span class="comment">// enqueue B, wait on S to start</span></span><br><span class="line"><span class="built_in">vkQueueSubmit</span>(work: B, signal: None, wait: S)</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;请注意，在这个代码片段中对vkQueueSubmit()的调用都立即返回-等待只发生在GPU上。CPU继续运行，不阻塞。为了让CPU等待，我们需要一个不同的同步原语。</p>
+<h2 id="栅栏"><a href="#栅栏" class="headerlink" title="栅栏"></a>栅栏</h2><p>&amp;emsp;&amp;emsp;fence具有类似的目的，因为它用于同步执行，但它用于对CPU(也称为主机)上的执行进行排序。隐含地说，如果主机需要知道GPU什么时候完成了某件事，我们使用栅栏。<br>&amp;emsp;&amp;emsp;与信号量类似，围栏要么处于有信号状态，要么处于无信号状态。当我们提交工作要执行时，我们可以为该工作附加一个围栏。当工作完成时，围栏将发出信号。然后，我们可以让主机等待栅栏发出信号，确保在主机继续之前工作已经完成。<br>&amp;emsp;&amp;emsp;一个具体的例子是截屏。假设我们已经在GPU上完成了必要的工作。现在需要将图像从GPU传输到主机，然后将内存保存到一个文件。我们有命令缓冲区A，它执行传输和隔离F。我们提交带有围栏F的命令缓冲区A，然后立即告诉主机等待F发出信号。这将导致主机阻塞，直到命令缓冲区A完成执行。因此，我们可以安全地让主机将文件保存到磁盘，因为内存传输已经完成。代码格式如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">VkCommandBuffer A = ... <span class="comment">// record command buffer with the transfer</span></span><br><span class="line">VkFence F = ... <span class="comment">// create the fence</span></span><br><span class="line"><span class="comment">// enqueue A, start work immediately, signal F when done</span></span><br><span class="line"><span class="built_in">vkQueueSubmit</span>(work: A, fence: F)</span><br><span class="line"><span class="built_in">vkWaitForFence</span>(F) <span class="comment">// blocks execution until A has finished executing</span></span><br><span class="line"><span class="built_in">save_screenshot_to_disk</span>() <span class="comment">// can&#x27;t run until the transfer has</span></span><br><span class="line">finished</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;与信号量的例子不同，这个例子会阻塞主机的执行。这意味着主机不会做任何事情，只是等待执行完成。对于这种情况，我们必须确保在将截图保存到磁盘之前完成传输。<br>&amp;emsp;&amp;emsp;一般来说，除非必要，最好不要阻塞主机。我们希望为GPU和主机提供有用的工作。等待栅栏发出信号并不是什么有用的工作。因此，我们更喜欢用信号量或其他尚未涉及的同步原语来同步我们的工作。必须手动重置围栏，使其恢复到无信号状态。这是因为围栏用于控制主机的执行，因此主机可以决定何时重置围栏。与此相反，信号量用于在不涉及主机的情况下对GPU上的工作进行排序。<br>&amp;emsp;&amp;emsp;总之，信号量用于指定GPU上操作的执行顺序，而围栏用于保持CPU和GPU彼此同步。</p>
+<h2 id="怎样来选择"><a href="#怎样来选择" class="headerlink" title="怎样来选择"></a>怎样来选择</h2><p>&amp;emsp;&amp;emsp;我们有两个同步原语可以使用，并且可以方便地在两个地方应用同步:Swapchain操作和等待前一帧完成。我们希望使用信号量进行交换链操作，因为它们发生在GPU上，因此如果可以的话，我们不想让主机等待。对于等待前一帧结束，我们希望使用栅栏，因为我们需要主机等待。这样我们就不会一次画超过一帧。因为我们每一帧都要重新记录命令缓冲区，所以在当前帧执行完成之前，我们不能将下一帧的工作记录到命令缓冲区中，因为我们不想在GPU使用命令缓冲区时覆盖命令缓冲区的当前内容。</p>
+<h2 id="创建同步的物体"><a href="#创建同步的物体" class="headerlink" title="创建同步的物体"></a>创建同步的物体</h2><p>&amp;emsp;&amp;emsp;我们需要一个信号量来表示已经从交换链中获取图像并准备好进行渲染，另一个信号量表示渲染已经完成，可以进行表示，还需要一个fence来确保一次只渲染一帧。代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建三个类成员来存储这些信号量对象和栅栏对象</span></span><br><span class="line">VkSemaphore imageAvailableSemaphore;</span><br><span class="line">VkSemaphore renderFinishedSemaphore;</span><br><span class="line">VkFence inFlightFence;</span><br><span class="line"></span><br><span class="line">VkSemaphoreCreateInfo semaphoreInfo&#123;&#125;;</span><br><span class="line">semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;</span><br><span class="line"><span class="built_in">vkCreateSemaphore</span>(device, &amp;semaphoreInfo, <span class="literal">nullptr</span>, &amp;imageAvailableSemaphore);</span><br><span class="line"><span class="built_in">vkCreateSemaphore</span>(device, &amp;semaphoreInfo, <span class="literal">nullptr</span>, &amp;renderFinishedSemaphore);</span><br><span class="line"><span class="built_in">vkCreateFence</span>(device, &amp;fenceInfo, <span class="literal">nullptr</span>, &amp;inFlightFence);</span><br><span class="line"><span class="comment">//clean up</span></span><br><span class="line"><span class="built_in">vkDestroySemaphore</span>(device, imageAvailableSemaphore, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkDestroySemaphore</span>(device, renderFinishedSemaphore, <span class="literal">nullptr</span>);</span><br><span class="line"><span class="built_in">vkDestroyFence</span>(device, inFlightFence, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="等待前一帧完成"><a href="#等待前一帧完成" class="headerlink" title="等待前一帧完成"></a>等待前一帧完成</h2><p>&amp;emsp;&amp;emsp;在帧开始时，我们希望等待前一帧结束，以便可以使用命令缓冲区和信号量。为此，我们调用vkWaitForFences</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">drawFrame</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="built_in">vkWaitForFences</span>(device, <span class="number">1</span>, &amp;inFlightFence, VK_TRUE, UINT64_MAX);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;vkWaitForFences函数接受一个栅栏数组，并在主机上等待任何或所有栅栏在返回之前发出信号。我们在这里传递的VK_TRUE表示我们想要等待所有栅栏，但在单个栅栏的情况下，这无关紧要。这个函数还有一个timeout参数，我们将其设置为64位无符号整数的最大值UINT64_MAX，这有效地禁用了超时。等待之后，我们需要用vkResetFences调用手动重置栅栏到无信号状态:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkResetFences</span>(device, <span class="number">1</span>, &amp;inFlightFence);</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;在我们继续之前，我们的设计中有一个小问题。在第一帧中，我们调用drawFrame()，它立即等待inFlightFence发出信号。inFlightFence只在一帧渲染完成后才会发出信号，但因为这是第一帧，所以没有前面的帧可以给fence发出信号!因此，vkWaitForFences()无限期地阻塞，等待一些永远不会发生的事情。在解决这一困境的许多解决方案中，API中内置了一个聪明的解决方案：在有信号状态下创建栅栏，这样对vkWaitForFences()的第一个调用就会立即返回，因为栅栏已经有信号了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VkFenceCreateInfo fenceInfo&#123;&#125;;</span><br><span class="line">fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;</span><br><span class="line">fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;</span><br></pre></td></tr></table></figure>
+<h2 id="从交换链中获取图像"><a href="#从交换链中获取图像" class="headerlink" title="从交换链中获取图像"></a>从交换链中获取图像</h2><p>&amp;emsp;&amp;emsp;在drawFrame函数中我们需要做的下一件事是从交换链中获取图像。回想一下，交换链是一个扩展特性，所以我们必须使用具有vk*KHR命名约定的函数:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint32_t</span> imageIndex;</span><br><span class="line"><span class="built_in">vkAcquireNextImageKHR</span>(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &amp;imageIndex);</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;vkAcquireNextImageKHR的前两个参数是我们希望从中获取映像的逻辑设备和交换链。第三个参数指定图像可用的超时时间(以纳秒为单位)使用64位无符号整数的最大值意味着我们有效地禁用了超时。接下来的两个参数指定在表示引擎完成使用映像时发出信号的同步对象。这是我们可以开始画的时间点。可以指定信号量、围栏或两者都指定。我们将使用imageAvailableSemaphore来实现这个目的。最后一个参数指定一个变量，用于输出可用的交换链映像的索引。索引引用swapChainImages数组中的VkImage。我们要用这个下标来选择VkFrameBuffer。</p>
+<h2 id="记录命令缓冲"><a href="#记录命令缓冲" class="headerlink" title="记录命令缓冲"></a>记录命令缓冲</h2><p>&amp;emsp;&amp;emsp;使用imageIndex指定要使用的交换链映像，我们现在可以记录命令缓冲区。首先，我们在命令缓冲区上调用vkResetCommandBuffer，以确保它能够被记录。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkResetCommandBuffer</span>(commandBuffer, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;vkResetCommandBuffer的第二个参数是VkCommandBufferResetFlagBits标志。因为我们不想做任何特别的事情，所以我们把它保留为0。现在调用函数recordCommandBuffer来记录我们想要的命令。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">recordCommandBuffer</span>(commandBuffer, imageIndex);</span><br></pre></td></tr></table></figure>
+<p>有了完整记录的命令缓冲区，我们现在可以提交它。</p>
+<h2 id="提交命令缓冲"><a href="#提交命令缓冲" class="headerlink" title="提交命令缓冲"></a>提交命令缓冲</h2><p>&amp;emsp;&amp;emsp;队列的提交以及同步通过VkSubmitInfo结构中的参数配置。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">VkSubmitInfo submitInfo&#123;&#125;;</span><br><span class="line">submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;</span><br><span class="line">VkSemaphore waitSemaphores[] = &#123;imageAvailableSemaphore&#125;;</span><br><span class="line">VkPipelineStageFlags waitStages[] =</span><br><span class="line">&#123;VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT&#125;;</span><br><span class="line">submitInfo.waitSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">submitInfo.pWaitSemaphores = waitSemaphores;</span><br><span class="line">submitInfo.pWaitDstStageMask = waitStages;</span><br><span class="line"><span class="comment">//指定实际提交执行的命令缓冲区。我们只需提交我们拥有的单个命令缓冲区。</span></span><br><span class="line">submitInfo.commandBufferCount = <span class="number">1</span>;</span><br><span class="line">submitInfo.pCommandBuffers = commandBuffer;</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;前三个参数指定在执行开始前等待哪个信号量，以及在管道的哪个阶段等待。我们希望等待将颜色写入图像，直到图像可用为止，因此我们指定了写入颜色附件的图形管道的阶段。这意味着理论上实现已经可以开始执行我们的顶点着色器，而图像还没有可用。waitStages数组中的每个条目都对应于pWaitSemaphores中具有相同索引的信号量。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VkSemaphore signalSemaphores[] = &#123;renderFinishedSemaphore&#125;;</span><br><span class="line">submitInfo.signalSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">submitInfo.pSignalSemaphores = signalSemaphores;</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;signalsemaphores和pSignalSemaphores参数指定在命令缓冲区完成执行后发出哪些信号。在我们的例子中，我们使用renderFinishedSemaphore来实现这个目的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkQueueSubmit</span>(graphicsQueue, <span class="number">1</span>， &amp;submitInfo, inFlightFence)</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;现在我们可以使用vkQueueSubmit将命令缓冲区提交到图形队列。当工作负载非常大时，该函数以VkSubmitInfo结构数组作为效率参数。最后一个参数引用了一个可选的栅栏，当命令缓冲区完成执行时将发出信号。这让我们知道什么时候重用命令缓冲区是安全的，因此我们想给它一个inFlightFence。现在在下一帧，CPU将等待这个命令缓冲区完成执行，然后再将新命令记录进去。</p>
+<h2 id="Subpass依赖性"><a href="#Subpass依赖性" class="headerlink" title="Subpass依赖性"></a>Subpass依赖性</h2><p>&amp;emsp;&amp;emsp;请记住，渲染通道中的子通道会自动处理图像布局过渡。这些转换由子传递依赖项控制，子传递依赖项指定子传递之间的内存和执行依赖项。我们现在只有一个子通道，但是在这个子通道之前和之后的操作也算隐含的“子通道”。有两个内置依赖项负责呈现通道开始和结束时的转换，但前者没有在正确的时间发生。它假设转换发生在管道的开始，但是我们还没有获得在那一点的图像!有两种方法来处理这个问题。我们可以改变imageAvailableSemaphore的waitStages为<br>VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT来确保渲染通道在图像可用之前不会开始，或者我们可以让渲染通道等待<br>VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT阶段。我决定在这里使用第二个选项，因为这是一个了解子通道依赖关系及其工作方式的好借口。子通道依赖关系在VkSubpassDependency结构体中指定。转到createRenderPass函数并添加一个:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VkSubpassDependency dependency&#123;&#125;;</span><br><span class="line">dependency.srcSubpass = VK_SUBPASS_EXTERNAL;</span><br><span class="line">dependency.dstSubpass = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;前两个字段指定依赖项和依赖子通道的索引。特殊值VK_SUBPASS_EXTERNAL指的是呈现传递之前还是之后的隐式子传递，这取决于它是在srcSubpass还是dstSubpass中指定的。索引0指的是我们的子通道，它是第一个也是唯一一个。dstSubpass必须总是高于srcSubpass，以防止依赖关系图中的循环（除非其中一个子通道是VK_SUBPASS_EXTERNAL）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;</span><br><span class="line">dependency.srcAccessMask = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;接下来的两个字段指定要等待的操作以及这些操作发生的阶段。我们需要等待交换链完成从映像的读取，然后才能访问它。这可以通过等待颜色附件输出阶段本身来完成。<br>&amp;emsp;&amp;emsp;应该等待此操作的操作位于颜色附加阶段，并涉及到颜色附加的写入。这些设置将阻止转换发生，直到它实际上是必要的(和允许的):当我们想要开始写入颜色时。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">renderPassInfo.dependencyCount = <span class="number">1</span>;</span><br><span class="line">renderPassInfo.pDependencies = &amp;dependency;</span><br></pre></td></tr></table></figure>
+<p>VkRenderPassCreateInfo结构体有两个字段来指定依赖项数组。</p>
+<h2 id="呈现"><a href="#呈现" class="headerlink" title="呈现"></a>呈现</h2><p>&amp;emsp;&amp;emsp;绘制帧的最后一步是将结果提交回交换链，使其最终显示在屏幕上。表示是通过drawFrame函数末尾的VkPresentInfoKHR结构配置的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VkPresentInfoKHR presentInfo&#123;&#125;;</span><br><span class="line">presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;</span><br><span class="line">presentInfo.waitSemaphoreCount = <span class="number">1</span>;</span><br><span class="line">presentInfo.pWaitSemaphores = signalSemaphores;</span><br></pre></td></tr></table></figure>
+<p>&amp;emsp;&amp;emsp;前两个参数指定在表示发生之前等待哪个信号量，就像VkSubmitInfo一样。因为我们想要等待命令缓冲区完成执行，这样我们的三角形就被绘制出来了，所以我们取将要发出信号的信号量并等待它们，因此我们使用signalSemaphores。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VkSwapchainKHR swapChains[] = &#123;swapChain&#125;;</span><br><span class="line">presentInfo.swapchainCount = <span class="number">1</span>;</span><br><span class="line">presentInfo.pSwapchains = swapChains;</span><br><span class="line">presentInfo.pImageIndices = &amp;imageIndex;</span><br></pre></td></tr></table></figure>
+<p>接下来的两个参数指定要向其显示图像的交换链和每个交换链的图像索引。这几乎总是一个。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vkQueuePresentKHR</span>(presentQueue, &amp;presentInfo);</span><br></pre></td></tr></table></figure>
+<p>vkQueuePresentKHR函数提交向交换链提供图像的请求。</p>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Vulkan%E5%AD%A6%E4%B9%A0/" rel="tag"># Vulkan学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/07/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B013-%E5%91%BD%E4%BB%A4%E7%BC%93%E5%AD%98/" rel="prev" title="Vulkan笔记-命令缓存">
+      <i class="fa fa-chevron-left"></i> Vulkan笔记-命令缓存
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/10/%E5%8D%97%E5%8C%97%E5%B7%AE%E5%BC%82/" rel="next" title="南北差异">
+      南北差异 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%B8%A7%E7%9A%84%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">一帧的概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5"><span class="nav-number">2.</span> <span class="nav-text">同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%85%E6%A0%8F"><span class="nav-number">4.</span> <span class="nav-text">栅栏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E6%A0%B7%E6%9D%A5%E9%80%89%E6%8B%A9"><span class="nav-number">5.</span> <span class="nav-text">怎样来选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%90%8C%E6%AD%A5%E7%9A%84%E7%89%A9%E4%BD%93"><span class="nav-number">6.</span> <span class="nav-text">创建同步的物体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E5%89%8D%E4%B8%80%E5%B8%A7%E5%AE%8C%E6%88%90"><span class="nav-number">7.</span> <span class="nav-text">等待前一帧完成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E4%BA%A4%E6%8D%A2%E9%93%BE%E4%B8%AD%E8%8E%B7%E5%8F%96%E5%9B%BE%E5%83%8F"><span class="nav-number">8.</span> <span class="nav-text">从交换链中获取图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E5%91%BD%E4%BB%A4%E7%BC%93%E5%86%B2"><span class="nav-number">9.</span> <span class="nav-text">记录命令缓冲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%91%BD%E4%BB%A4%E7%BC%93%E5%86%B2"><span class="nav-number">10.</span> <span class="nav-text">提交命令缓冲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subpass%E4%BE%9D%E8%B5%96%E6%80%A7"><span class="nav-number">11.</span> <span class="nav-text">Subpass依赖性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%88%E7%8E%B0"><span class="nav-number">12.</span> <span class="nav-text">呈现</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yeha</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yeha</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+<% if (page.mathjax){ %>
+<%- partial('mathjax') %>
+<% } %>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

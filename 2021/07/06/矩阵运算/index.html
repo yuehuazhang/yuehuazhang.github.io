@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本博文主要讲解矩阵的应用矩阵与点的变换&amp;emsp;&amp;emsp;在三维线性空间中，有一组向量基表示为：$e &#x3D;\left ( e_{1},e_{2},e_{3}\right)$，其中$e_{1}&#x3D;\begin{pmatrix} x_{1}\y_{1} \z_{1}\end{pmatrix}$，$e_{2}&#x3D;\begin{pmatrix} x_{2}\y_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="矩阵运算">
+<meta property="og:url" content="https://yuehuazhang.github.io/2021/07/06/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/index.html">
+<meta property="og:site_name" content="Yeha的博客">
+<meta property="og:description" content="本博文主要讲解矩阵的应用矩阵与点的变换&amp;emsp;&amp;emsp;在三维线性空间中，有一组向量基表示为：$e &#x3D;\left ( e_{1},e_{2},e_{3}\right)$，其中$e_{1}&#x3D;\begin{pmatrix} x_{1}\y_{1} \z_{1}\end{pmatrix}$，$e_{2}&#x3D;\begin{pmatrix} x_{2}\y_">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-06T15:21:37.090Z">
+<meta property="article:modified_time" content="2022-10-31T14:12:30.710Z">
+<meta property="article:author" content="Yeha">
+<meta property="article:tag" content="矩阵">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yuehuazhang.github.io/2021/07/06/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>矩阵运算 | Yeha的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yeha的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休说鲈鱼堪脍，尽西风，季鹰归未？</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2021/07/06/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          矩阵运算
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-06 23:21:37" itemprop="dateCreated datePublished" datetime="2021-07-06T23:21:37+08:00">2021-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-31 22:12:30" itemprop="dateModified" datetime="2022-10-31T22:12:30+08:00">2022-10-31</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B2%E6%9F%93/" itemprop="url" rel="index"><span itemprop="name">渲染</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="本博文主要讲解矩阵的应用"><a href="#本博文主要讲解矩阵的应用" class="headerlink" title="本博文主要讲解矩阵的应用"></a>本博文主要讲解矩阵的应用</h1><h2 id="矩阵与点的变换"><a href="#矩阵与点的变换" class="headerlink" title="矩阵与点的变换"></a>矩阵与点的变换</h2><p>&amp;emsp;&amp;emsp;在三维线性空间中，有一组向量基表示为：$e &#x3D;\left ( e_{1},e_{2},e_{3}\right)$，其中$e_{1}&#x3D;\begin{pmatrix}<br> x_{1}<br>\y_{1}<br> \z_{1}<br>\end{pmatrix}$，$e_{2}&#x3D;\begin{pmatrix}<br> x_{2}<br>\y_{2}<br> \z_{2}<br>\end{pmatrix}$,$e_{3}&#x3D;\begin{pmatrix}<br> x_{3}<br>\y_{3}<br> \z_{3}<br>\end{pmatrix}$。有一个点$P$在该组向量基下的坐标为$P&#x3D;\left ( x,y,z \right )$。<br>&amp;emsp;&amp;emsp; 在该空间中另有一组向量基表示为：$e^{‘}&#x3D;\left ( e_{1}^{‘},e_{2}^{‘},e_{3}^{‘}\right )$其中$e_{1}^{‘}&#x3D;\begin{pmatrix}<br> x_{1}^{‘}<br>\y_{1}^{‘}<br> \z_{1}^{‘}<br>\end{pmatrix}$,$e_{2}^{‘}&#x3D;\begin{pmatrix} x_{2}^{‘}<br>\y_{2}^{‘}<br> \z_{2}^{‘}<br>\end{pmatrix}$,$e_{3}^{‘}&#x3D;\begin{pmatrix}<br> x_{3}^{‘}<br>\y_{3}^{‘}<br> \z_{3}^{‘}<br>\end{pmatrix}$在该向量基下对应的点$P$的坐标$P^{‘}&#x3D;\left (x^{‘},y^{‘},z^{‘} \right)$那么我们可以得到：<br>$$<br>P &#x3D; P^{‘}<em>e^{‘}e^{-1}, P^{‘} &#x3D; P</em>e<em>e^{‘-1}<br>$$<br>也就是说：<br>$$<br>P&#x3D;\left ( x,y,z \right )&#x3D;\left (x^{‘},y^{‘},z^{‘} \right)</em><br>\begin{pmatrix}<br> x_{1}^{‘}&amp;x_{2}^{‘}&amp;x_{3}^{‘}<br>\y_{1}^{‘}&amp;y_{2}^{‘}&amp;y_{3}^{‘}<br> \z_{1}^{‘}&amp;z_{2}^{‘}&amp;z_{3}^{‘}<br>\end{pmatrix}*<br>\begin{pmatrix}<br> x_{1}&amp;x_{2}&amp;x_{3}<br>\y_{1}&amp;y_{2}&amp;y_{3}<br> \z_{1}&amp;z_{2}&amp;z_{3}<br>\end{pmatrix}^{-1}<br>$$<br>$$<br>P^{‘}&#x3D;\left (x^{‘},y^{‘},z^{‘} \right)&#x3D;\left ( x,y,z \right )*<br>\begin{pmatrix}<br> x_{1}&amp;x_{2}&amp;x_{3}<br>\y_{1}&amp;y_{2}&amp;y_{3}<br> \z_{1}&amp;z_{2}&amp;z_{3}<br>\end{pmatrix}*<br>\begin{pmatrix}<br> x_{1}^{‘}&amp;x_{2}^{‘}&amp;x_{3}^{‘}<br>\y_{1}^{‘}&amp;y_{2}^{‘}&amp;y_{3}^{‘}<br> \z_{1}^{‘}&amp;z_{2}^{‘}&amp;z_{3}^{‘}<br>\end{pmatrix}^{-1}<br>$$</p>
+<h2 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h2><h3 id="旋转矩阵的公式"><a href="#旋转矩阵的公式" class="headerlink" title="旋转矩阵的公式"></a>旋转矩阵的公式</h3><p>&amp;emsp;&amp;emsp; 设一个向量$v&#x3D;\left (v_{x},v_{y},v_{z}\right)$在右手坐标系中绕一个轴$r&#x3D;\left (r_{x},r_{y},r_{z} \right)$ 逆时针旋转$\phi$度（从轴的正方向往负方向看），其中$r$是一个单位向量。那么对应的旋转矩阵是：<br>$$<br>R&#x3D;<br>\begin{pmatrix}<br> cos\phi+(1-cos\phi)*r_{x}^{2}&amp;(1-cos\phi)*r_{x}*r_{y}-r_{z}sin\phi&amp;(1-cos\phi)*r_{x}*r_{z}+r_{y}sin\phi<br>\(1-cos\phi)*r_{x}*r_{y}+r_{z}sin\phi&amp;cos\phi+(1-cos\phi)*r_{y}^{2}&amp;(1-cos\phi)*r_{y}*r_{z}-r_{x}sin\phi<br> \(1-cos\phi)*r_{x}*r_{z}-r_{y}sin\phi&amp;(1-cos\phi)*r_{y}*r_{z}+r_{x}sin\phi&amp;cos\phi+(1-cos\phi)*r_{z}^{2}<br>\end{pmatrix}<br>$$</p>
+<h2 id="欧拉角"><a href="#欧拉角" class="headerlink" title="欧拉角"></a>欧拉角</h2><h2 id="四元数"><a href="#四元数" class="headerlink" title="四元数"></a>四元数</h2><h3 id="四元数的基本运算"><a href="#四元数的基本运算" class="headerlink" title="四元数的基本运算"></a>四元数的基本运算</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><ul>
+<li>一个四元数可以进行如下定义：<br>$$\hat{q} &#x3D;(q_{v}, q_{w}) &#x3D; iq_{x} + jq_{y} + kq_{z} + q_{w} &#x3D; q_{v} + q_{w}$$<br>$$ i^{2} &#x3D; j^{2} &#x3D; k^{2} &#x3D; -1, jk &#x3D; -kj &#x3D; i, ki &#x3D; -ik &#x3D; j, ij &#x3D; -ji &#x3D; k.$$</li>
+<li>乘法<br>$$ \hat{q}\hat{r} &#x3D; (q_{v}\times r_{v}+ r_{w}q_{v}+q_{w}r_{v},q_{w}r_{w}-q_{v}\cdot r_{v})$$</li>
+<li>共轭<br>$$\hat{q}^{*} &#x3D; (-q_{v}, q_{w})$$</li>
+<li>加法<br>$$\hat{q} + \hat{v} &#x3D; (q_{v}+r_{v}, q_{w}+r_{w})$$</li>
+<li>规范化<br>$$n(\hat{q}) &#x3D; \sqrt{\hat{q}\hat{q}^{*}} &#x3D; \sqrt{q_{v}\cdot q_{v} + q^{2}<em>{w}}<br>&#x3D; \sqrt{q</em>{x}^{2}+ q_{y}^{2}+q_{z}^{2}+q_{w}^{2}}.$$</li>
+<li>单位化<br>$$\hat{i} &#x3D; (0,1)$$</li>
+<li>逆<br>$$\hat{q}^{-1} &#x3D; \frac{1}{n(\hat{q})^{2}}\hat{q}^{*}$$</li>
+</ul>
+<h3 id="四元数与旋转"><a href="#四元数与旋转" class="headerlink" title="四元数与旋转"></a>四元数与旋转</h3><p>&amp;emsp;&amp;emsp;设一个向量(或者点)$\hat{p}&#x3D;\left (p_{x},p_{y},p_{z},p_{w}\right)$,我们设其为一个四元组，假设我们还有一个单位四元组$\hat{q}&#x3D;\left (sin\phi*u_{q},cos\phi\right)$,那么我们可以得到：<br>$$ \hat{q}\hat{p}\hat{q}^{-1}$$<br>表示$P$绕着旋转轴$u_{q}$旋转$2\phi$得到的结果，其中$u_{q}$是一个单位向量。</p>
+<h3 id="球面插值"><a href="#球面插值" class="headerlink" title="球面插值"></a>球面插值</h3><p>$$ \hat{s}(\hat{q},\hat{r},t) &#x3D; slerp(\hat{q},\hat{r},t)&#x3D;\frac{sin(\phi(1-t))}{sin(\phi)}\hat{q} + \frac{sin(\phi t)}{sin(\phi)}\hat{r}$$<br>其中<br>$$ cos\phi&#x3D;q_{x}r_{x}+q_{y}r_{y}+q_{z}r_{z}+q_{w}r_{w}$$</p>
+<h2 id="矩阵与OpenGL"><a href="#矩阵与OpenGL" class="headerlink" title="矩阵与OpenGL"></a>矩阵与OpenGL</h2><p>&amp;emsp;&amp;emsp; 首先明确一下OpenGL中的几个坐标系。首先模型所在的坐标系（或者称之为局部空间，Local Space），其次世界坐标系（World Space），再次相机坐标系（也是观察坐标系，View Space），然后是裁剪坐标系（Clip Space）最后是屏幕坐标系（Screen Space）。OpenGL中要渲染的物体顶点的起始坐标按序经过上述5个坐标系系统最终转换为屏幕坐标。</p>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A9%E9%98%B5/" rel="tag"># 矩阵</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/28/hello-world/" rel="prev" title="我的博客">
+      <i class="fa fa-chevron-left"></i> 我的博客
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/15/%E7%94%A8VS2019%E7%BC%96%E8%AF%91FreeCAD/" rel="next" title="用VS2019编译FreeCAD">
+      用VS2019编译FreeCAD <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E5%8D%9A%E6%96%87%E4%B8%BB%E8%A6%81%E8%AE%B2%E8%A7%A3%E7%9F%A9%E9%98%B5%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">本博文主要讲解矩阵的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8E%E7%82%B9%E7%9A%84%E5%8F%98%E6%8D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">矩阵与点的变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%95%E4%BB%BB%E6%84%8F%E8%BD%B4%E6%97%8B%E8%BD%AC"><span class="nav-number">1.2.</span> <span class="nav-text">绕任意轴旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E7%9A%84%E5%85%AC%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">旋转矩阵的公式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E8%A7%92"><span class="nav-number">1.3.</span> <span class="nav-text">欧拉角</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">四元数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97"><span class="nav-number">1.4.1.</span> <span class="nav-text">四元数的基本运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">定义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC"><span class="nav-number">1.4.2.</span> <span class="nav-text">四元数与旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%83%E9%9D%A2%E6%8F%92%E5%80%BC"><span class="nav-number">1.4.3.</span> <span class="nav-text">球面插值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B8%8EOpenGL"><span class="nav-number">1.5.</span> <span class="nav-text">矩阵与OpenGL</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yeha</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yeha</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+<% if (page.mathjax){ %>
+<%- partial('mathjax') %>
+<% } %>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

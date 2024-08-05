@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。 平面阴影投影阴影&amp;emsp;&amp;emsp; 投影阴影需要一个矩阵，将物体上的点通过这个矩阵投影到平面上。我们设要投影到的平面是$\pi: n\cdot x + d &#x3D; 0$,光线的方向是$l&#x3D;(l_{x},l_{y},l_{y})$那么我们可以得到这个矩阵是$$M&#x3D;\left(\beg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阴影算法">
+<meta property="og:url" content="https://yuehuazhang.github.io/2023/03/13/%E9%98%B4%E5%BD%B1%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Yeha的博客">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。 平面阴影投影阴影&amp;emsp;&amp;emsp; 投影阴影需要一个矩阵，将物体上的点通过这个矩阵投影到平面上。我们设要投影到的平面是$\pi: n\cdot x + d &#x3D; 0$,光线的方向是$l&#x3D;(l_{x},l_{y},l_{y})$那么我们可以得到这个矩阵是$$M&#x3D;\left(\beg">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-13T14:07:50.723Z">
+<meta property="article:modified_time" content="2023-03-28T12:32:41.971Z">
+<meta property="article:author" content="Yeha">
+<meta property="article:tag" content="渲染">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yuehuazhang.github.io/2023/03/13/%E9%98%B4%E5%BD%B1%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>阴影算法 | Yeha的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yeha的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休说鲈鱼堪脍，尽西风，季鹰归未？</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2023/03/13/%E9%98%B4%E5%BD%B1%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          阴影算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-03-13 22:07:50" itemprop="dateCreated datePublished" datetime="2023-03-13T22:07:50+08:00">2023-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-28 20:32:41" itemprop="dateModified" datetime="2023-03-28T20:32:41+08:00">2023-03-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B2%E6%9F%93/" itemprop="url" rel="index"><span itemprop="name">渲染</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>&amp;emsp;&amp;emsp; 本节主要讲解一些阴影算法。</p>
+<h2 id="平面阴影"><a href="#平面阴影" class="headerlink" title="平面阴影"></a>平面阴影</h2><h3 id="投影阴影"><a href="#投影阴影" class="headerlink" title="投影阴影"></a>投影阴影</h3><p>&amp;emsp;&amp;emsp; 投影阴影需要一个矩阵，将物体上的点通过这个矩阵投影到平面上。<br>我们设要投影到的平面是$\pi: n\cdot x + d &#x3D; 0$,光线的方向是$l&#x3D;(l_{x},l_{y},l_{y})$那么我们可以得到这个矩阵是<br>$$<br>M&#x3D;<br>\left(<br>\begin{matrix}<br>\pmb{n}\cdot \pmb{l} - l_{x}n_{x} &amp; -l_{x}n_{y} &amp; -l_{x}n_{z} &amp; -l_{x}d \<br>-l_{y}n_{x} &amp;  \pmb{n}\cdot \pmb{l}+d-l_{y}n_{y} &amp; -l_{y}n_{z} &amp; -l_{y}d \<br>-l_{z}n_{x} &amp; -l_{z}n_{y}  &amp; \pmb{n}\cdot \pmb{l}+d-l_{z}n_{z} &amp; -l_{z}d  \<br>-n_{x} &amp; -n_{y}  &amp; -n_{z} &amp; \pmb{n}\cdot \pmb{l}<br>\end{matrix}<br>\right)<br>$$<br>&amp;emsp;&amp;emsp; 绘制平面阴影的方法：首先绘制平面，然后在关闭深度测试的情况下绘制投影，最后正常的绘制其他的物体。如果平面不是无限大的，那么有可能阴影会落到平面外，我们可以在绘制平面的时候开启模板缓冲，在绘制投影的时候，只有前面绘制了模板的地方才会绘制投影，最后正常的绘制其他的物体。</p>
+<h3 id="软阴影"><a href="#软阴影" class="headerlink" title="软阴影"></a>软阴影</h3><p>&amp;emsp;&amp;emsp; 软阴影产生的原因：光源本身不是一个点，他是有面积的，所以光源照射到物体上时，会产生半影和本影。理论上来说，我们将光源分解为足够多的点光源，产生阴影，将所有阴影做一个平均值，就可以得到本影和半影，不过这样效率很慢，效果不理想，不适合在工程中进行应用。</p>
+<h4 id="Heckbert-and-Herf算法"><a href="#Heckbert-and-Herf算法" class="headerlink" title="Heckbert and Herf算法"></a>Heckbert and Herf算法</h4><h2 id="PCF"><a href="#PCF" class="headerlink" title="PCF"></a>PCF</h2><h2 id="PCSS"><a href="#PCSS" class="headerlink" title="PCSS"></a>PCSS</h2><script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%B2%E6%9F%93/" rel="tag"># 渲染</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/27/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" rel="prev" title="渲染方程的学习">
+      <i class="fa fa-chevron-left"></i> 渲染方程的学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/05/13/%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5/" rel="next" title="现代图形学中的几个重要概念">
+      现代图形学中的几个重要概念 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E9%98%B4%E5%BD%B1"><span class="nav-number">1.</span> <span class="nav-text">平面阴影</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E5%BD%B1%E9%98%B4%E5%BD%B1"><span class="nav-number">1.1.</span> <span class="nav-text">投影阴影</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E9%98%B4%E5%BD%B1"><span class="nav-number">1.2.</span> <span class="nav-text">软阴影</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Heckbert-and-Herf%E7%AE%97%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">Heckbert and Herf算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PCF"><span class="nav-number">2.</span> <span class="nav-text">PCF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PCSS"><span class="nav-number">3.</span> <span class="nav-text">PCSS</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yeha</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yeha</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+<% if (page.mathjax){ %>
+<%- partial('mathjax') %>
+<% } %>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

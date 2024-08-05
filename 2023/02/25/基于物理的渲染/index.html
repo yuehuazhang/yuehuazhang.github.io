@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yuehuazhang.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cook-Torrance BRDF推导微平面理论&amp;emsp;&amp;emsp; 微平面理论(Microfacets Theory)顾名思义，就是从微观的角度去分析，其认为任意物体的表面在到达微观的尺度之后，都是由许许多多的更小的镜面所组成的。&amp;emsp;&amp;emsp; 漫反射和镜面反射产生的原因解释：当光线照射到物体表面时，一部分光线会与表面的许许多多的微小镜面发生镜面反">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Yeha的博客">
+<meta property="og:url" content="https://yuehuazhang.github.io/2023/02/25/%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%B8%B2%E6%9F%93/index.html">
+<meta property="og:site_name" content="Yeha的博客">
+<meta property="og:description" content="Cook-Torrance BRDF推导微平面理论&amp;emsp;&amp;emsp; 微平面理论(Microfacets Theory)顾名思义，就是从微观的角度去分析，其认为任意物体的表面在到达微观的尺度之后，都是由许许多多的更小的镜面所组成的。&amp;emsp;&amp;emsp; 漫反射和镜面反射产生的原因解释：当光线照射到物体表面时，一部分光线会与表面的许许多多的微小镜面发生镜面反">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-25T02:24:07.292Z">
+<meta property="article:modified_time" content="2023-03-13T14:07:34.446Z">
+<meta property="article:author" content="Yeha">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yuehuazhang.github.io/2023/02/25/%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%B8%B2%E6%9F%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | Yeha的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yeha的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休说鲈鱼堪脍，尽西风，季鹰归未？</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yuehuazhang.github.io/2023/02/25/%E5%9F%BA%E4%BA%8E%E7%89%A9%E7%90%86%E7%9A%84%E6%B8%B2%E6%9F%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Yeha">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yeha的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-25 10:24:07" itemprop="dateCreated datePublished" datetime="2023-02-25T10:24:07+08:00">2023-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-13 22:07:34" itemprop="dateModified" datetime="2023-03-13T22:07:34+08:00">2023-03-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Cook-Torrance-BRDF推导"><a href="#Cook-Torrance-BRDF推导" class="headerlink" title="Cook-Torrance BRDF推导"></a>Cook-Torrance BRDF推导</h2><h3 id="微平面理论"><a href="#微平面理论" class="headerlink" title="微平面理论"></a>微平面理论</h3><p>&amp;emsp;&amp;emsp; 微平面理论(Microfacets Theory)顾名思义，就是从微观的角度去分析，其认为任意物体的表面在到达微观的尺度之后，都是由许许多多的更小的镜面所组成的。<br>&amp;emsp;&amp;emsp; 漫反射和镜面反射产生的原因解释：当光线照射到物体表面时，一部分光线会与表面的许许多多的微小镜面发生镜面反射，另一部分光线则会折射进入物体内部，当光线折射进入内部的时候会与物体的微小粒子不断发生碰撞并散射到随机方向，同时才碰撞的过程中一部分光线的能量会被吸收转换为热能，有些光线在多次碰撞之后能量消耗殆尽，则表示该光线完全被物体吸收。还有一部分折射到物体内部的光线会因为散射方向的随机性重新离开表面，而这部分光线就形成了漫反射。<br>&amp;emsp;&amp;emsp; Cook-Torrance BRDF的公式我们可以写成：<br>$$<br>f_{r}&#x3D;k_{d}f_{lambert} + k_{s}f_{cook-torrance}<br>$$<br>其中$k_{d}$,$k_{s}$分别指入射光线中被折射部分的能量所占的比率与被反射部分的比率(菲涅尔项)。<br>$f_{lambert}$ 表示漫反射的BRDF，f_{cook-torrance}表示镜面反射的BRDF。</p>
+<h3 id="漫反射项的推导"><a href="#漫反射项的推导" class="headerlink" title="漫反射项的推导"></a>漫反射项的推导</h3><p>&amp;emsp;&amp;emsp; 根据反射方程我们可以得到如下的公式<br>$$<br>L_{o}(\omega_{o}) &#x3D; \int_{H^{2}}f_{r}L_{i}(\omega_{i})cos\theta_{i}d\omega_{i}<br>$$<br>由于是漫反射，所以我们知道，其能量向各个方向上反射都是一样的，所以我们可以得到$L_{i}$是一个定值，同时有$L_{o}&#x3D;L_{i}$， 所以我们可以得到<br>$$<br>L_{o}(\omega_{o}) &#x3D; f_{r}L_{i}(\omega_{i})\int_{H^{2}}cos\theta_{i}d\omega_{i} &#x3D; f_{r}L_{i}(\omega_{i})\int_{H^{2}}cos\theta_{i}sinθdθdϕ&#x3D;\pi*f_{r}*L_{i}<br>$$<br>即我们可以得到：<br>$$<br>f_{r} &#x3D; \frac{1}{\pi}<br>$$<br>因为能量有可能被吸收，所以我们需要给其一个系数：<br>$$<br>f_{r} &#x3D; \frac{\rho}{\pi}<br>$$<br>$\rho$其实是一个三维的向量。</p>
+<h3 id="镜面反射的推导"><a href="#镜面反射的推导" class="headerlink" title="镜面反射的推导"></a>镜面反射的推导</h3><p>镜面反射先给出镜面反射的BRDF:<br>$$<br>f_{cook−torrance}&#x3D;\frac{F(l,h)G(l,v)D(h)}{4(n\cdot l)(n\cdot v)}<br>$$<br>函数D：法线分布函数(Normal Distribution Function)，其代表了所有微观角度下微小镜面法线的分布情况，粗糙表面法线分布相对均匀，光滑表面法线分布相对集中，其是微分面积和微分立体角下的。<br>函数G：几何函数(Geometry Function)，描述了微平面自遮挡的属性。当一个平面相对比较粗糙的时候，平面表面上的微平面有可能挡住其他的微平面从而减少表面所反射的光线。<br>函数F：菲涅尔方程(Fresnel Rquation)，描述了物体表面在不同观察角度下反射光线所占的比率。<br>关于F函数和G函数我们有<br>$$<br>0\leqslant G(l,v) \leqslant 1<br>$$<br>$$<br>0\leqslant F(l,v) \leqslant 1<br>$$<br>&amp;emsp;&amp;emsp; 我们首先推导法线分布函数。根据辐射通量的定义，我们有：<br>$$<br>d\Phi&#x3D;L_{i}(\omega_{i})d\omega_{i}cos\theta dA<br>$$<br>那么我们有<br>$$<br>dL_{o}(\omega_{o})&#x3D; \frac{d\Phi}{d\omega_{o}cos\theta_{o} dA}&#x3D;\frac{L_{i}(\omega_{i})d\omega_{i}cos\theta_{h}D(\omega_{h})d\omega_{h}dA}{d\omega_{o}cos\theta_{o} dA}<br>$$<br>最后根据BRDF的定义我们可以得到：<br>$$<br>f_{cook−torrance}(\omega_{i},\omega_{o}) &#x3D; \frac{dL_{o}(\omega_{o})}{L_{i}(\omega_{i})cos \theta_{i}d\omega_{i}}&#x3D;\frac{cos\theta_{h}D(\omega_{h})d\omega_{h}}{cos \theta_{o}cos \theta_{i}d\omega_{i}}<br>$$<br>我们有<br>$$<br>\frac{d\omega_{h}}{d\omega_{o}}&#x3D; \frac{1}{4cos\theta_{h}}<br>$$<br>最后我们得到：<br>$$<br>f_{cook−torrance}(\omega_{i},\omega_{o})&#x3D;\frac{D(\omega_{h})}{4cos\theta_{o}cos \theta_{i}}<br>$$<br>加上粗糙和菲涅尔项我们可以得到：<br>$$<br>f_{cook−torrance}(\omega_{i},\omega_{o})&#x3D;\frac{F_{r}(\omega_{o}, \omega_{h})D(\omega_{h})G(\omega_{i},\omega_{o})}{4cos\theta_{o}cos \theta_{i}}<br>$$</p>
+<script type="text&#x2F;javascript" src="https://unpkg.com/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://unpkg.com/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://unpkg.com/hexo-simple-mindmap@0.8.0/dist/mindmap.min.css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/15/Vulkan%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B015-%E9%A3%9E%E8%A1%8C%E4%B8%AD%E7%9A%84%E5%B8%A7/" rel="prev" title="Vulkan笔记-飞行中的帧">
+      <i class="fa fa-chevron-left"></i> Vulkan笔记-飞行中的帧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/02/26/%E5%93%81%E4%BA%BA%E5%BD%95%E8%AF%BB%E5%90%8E%E6%84%9F/" rel="next" title="品人录读后感">
+      品人录读后感 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cook-Torrance-BRDF%E6%8E%A8%E5%AF%BC"><span class="nav-number">1.</span> <span class="nav-text">Cook-Torrance BRDF推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E5%B9%B3%E9%9D%A2%E7%90%86%E8%AE%BA"><span class="nav-number">1.1.</span> <span class="nav-text">微平面理论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%AB%E5%8F%8D%E5%B0%84%E9%A1%B9%E7%9A%84%E6%8E%A8%E5%AF%BC"><span class="nav-number">1.2.</span> <span class="nav-text">漫反射项的推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E9%9D%A2%E5%8F%8D%E5%B0%84%E7%9A%84%E6%8E%A8%E5%AF%BC"><span class="nav-number">1.3.</span> <span class="nav-text">镜面反射的推导</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yeha</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yeha</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+<% if (page.mathjax){ %>
+<%- partial('mathjax') %>
+<% } %>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
